@@ -268,6 +268,14 @@
         <label>السيرة الذاتية</label>
         <textarea id="adm-bio"></textarea>
 
+        <label>رابط إنستغرام (Instagram)</label>
+        <input id="adm-soc-instagram" type="text" placeholder="https://instagram.com/..." />
+        <label>رابط تيك توك (TikTok)</label>
+        <input id="adm-soc-tiktok" type="text" placeholder="https://tiktok.com/@..." />
+        <label>رابط فيسبوك (Facebook)</label>
+        <input id="adm-soc-facebook" type="text" placeholder="https://facebook.com/..." />
+        <label>رابط يوتيوب (YouTube)</label>
+        <input id="adm-soc-youtube" type="text" placeholder="https://youtube.com/@..." />
         <div class="action-bar">
           <button id="save-main-btn" class="btn-purple" type="button">حفظ تعديلات الهوية والصور والدفع والسيرة</button>
         </div>
@@ -498,6 +506,11 @@
         document.getElementById("adm-paypal").value = state.paypal || "";
         document.getElementById("adm-bank").value = state.bank || "";
         document.getElementById("adm-bio").value = state.bio || "";
+        const soc = state.socials || {};
+        document.getElementById("adm-soc-instagram").value = soc.instagram || "";
+        document.getElementById("adm-soc-tiktok").value = soc.tiktok || "";
+        document.getElementById("adm-soc-facebook").value = soc.facebook || "";
+        document.getElementById("adm-soc-youtube").value = soc.youtube || "";
         const fb = state.featuredBook || DEFAULT_DATA.featuredBook;
         document.getElementById("adm-fbook-title").value = fb.title || "";
         document.getElementById("adm-fbook-price").value = fb.price || "";
@@ -556,6 +569,12 @@
         state.bio = document.getElementById("adm-bio").value.trim();
         if (pendingHeroData) state.heroBg = pendingHeroData;
         if (pendingAvatarData) state.avatar = pendingAvatarData;
+        state.socials = {
+          instagram: document.getElementById("adm-soc-instagram").value.trim(),
+          tiktok: document.getElementById("adm-soc-tiktok").value.trim(),
+          facebook: document.getElementById("adm-soc-facebook").value.trim(),
+          youtube: document.getElementById("adm-soc-youtube").value.trim()
+        };
         saveState(); render();
         statusMsg.textContent = "تم حفظ التعديلات والصور وتحديث الموقع فوراً.";
       });
