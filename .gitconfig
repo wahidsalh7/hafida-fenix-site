@@ -1,5 +1,0 @@
-[user]
-	name = YOUR_GITHUB_USERNAME
-	email = YOUR_EMAIL@example.com
-[credential]
-	helper = store
