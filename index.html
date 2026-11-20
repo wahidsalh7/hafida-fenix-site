@@ -632,5 +632,89 @@ window.SUPABASE_CONFIG = {
 };
 </script>
 
+
+<script id="cloud-sync-engine">
+(function() {
+  const cfg = window.SUPABASE_CONFIG;
+  if (!cfg || !cfg.url || !cfg.anonKey) return;
+
+  const restBase = cfg.url.replace(/\/+$/, "") + "/rest/v1/" + cfg.table;
+  const storageBase = cfg.url.replace(/\/+$/, "") + "/storage/v1/object/" + cfg.bucket;
+  const headers = {
+    "apikey": cfg.anonKey,
+    "Authorization": "Bearer " + cfg.anonKey,
+    "Content-Type": "application/json"
+  };
+
+  window.cloudSaveState = async function(payloadObj) {
+    try {
+      const body = JSON.stringify({ id: "main", data: payloadObj, updated_at: new Date().toISOString() });
+      const res = await fetch(restBase + "?on_conflict=id", {
+        method: "POST",
+        headers: Object.assign({}, headers, { "Prefer": "resolution=merge-duplicates,return=representation" }),
+        body
+      });
+      return res.ok;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  window.cloudLoadState = async function() {
+    try {
+      const res = await fetch(restBase + "?id=eq.main&select=data,updated_at", {
+        method: "GET",
+        headers
+      });
+      if (!res.ok) return null;
+      const rows = await res.json();
+      return (rows && rows[0] && rows[0].data) ? rows[0].data : null;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  window.cloudUploadFile = async function(file) {
+    if (!file) return null;
+    const safeName = Date.now() + "_" + file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const uploadUrl = storageBase + "/" + encodeURIComponent(safeName);
+    const res = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+        "apikey": cfg.anonKey,
+        "Authorization": "Bearer " + cfg.anonKey,
+        "Content-Type": file.type || "application/octet-stream",
+        "x-upsert": "true"
+      },
+      body: file
+    });
+    if (!res.ok) return null;
+    return cfg.url.replace(/\/+$/, "") + "/storage/v1/object/public/" + cfg.bucket + "/" + encodeURIComponent(safeName);
+  };
+
+  const origSetItem = localStorage.setItem.bind(localStorage);
+  let syncingFromCloud = false;
+  localStorage.setItem = function(k, v) {
+    origSetItem(k, v);
+    if (!syncingFromCloud && /site|hafida|state|content|posts|books|articles/i.test(k)) {
+      let parsed = v;
+      try { parsed = JSON.parse(v); } catch (_) {}
+      window.cloudSaveState({ key: k, value: parsed, allKeys: Object.assign({}, localStorage) });
+    }
+  };
+
+  window.addEventListener("DOMContentLoaded", async () => {
+    const cloudData = await window.cloudLoadState();
+    if (cloudData && cloudData.allKeys && typeof cloudData.allKeys === "object") {
+      syncingFromCloud = true;
+      Object.keys(cloudData.allKeys).forEach((k) => {
+        if (!/supabase/i.test(k)) origSetItem(k, cloudData.allKeys[k]);
+      });
+      syncingFromCloud = false;
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
