@@ -87,10 +87,29 @@
     .sub-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
     .sub-card h4 { color: #3b0764; font-size: 1.05rem; margin-bottom: 6px; }
     .sub-card p { color: var(--text-muted); font-size: 0.93rem; margin-bottom: 10px; white-space: pre-line; }
+    .badge-home {
+      display: inline-block; background: #f3e8ff; color: #5b21b6; border: 1px solid #d8b4fe;
+      font-size: 0.76rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; margin-bottom: 8px;
+    }
+    .video-box { margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #140826; }
+    .video-box video { width: 100%; max-height: 280px; display: block; }
+    .featured-book-box {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px; align-items: center; margin-top: 12px;
+    }
+    .featured-cover {
+      width: 100%; max-height: 290px; object-fit: cover; border-radius: 14px;
+      border: 1px solid var(--border); background: #faf5ff;
+    }
+    .price-pill {
+      display: inline-block; background: linear-gradient(135deg, #ede9fe, #f3e8ff);
+      color: #4c1d95; border: 1px solid #c4b5fd; font-weight: 800; font-size: 1.05rem;
+      padding: 6px 14px; border-radius: 999px; margin: 6px 0 10px;
+    }
     .pay-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .pay-btn, .file-link {
       display: inline-block; text-decoration: none; font-size: 0.86rem; font-weight: 700;
-      padding: 7px 13px; border-radius: 10px; border: 1px solid var(--violet); cursor: pointer;
+      padding: 8px 14px; border-radius: 10px; border: 1px solid var(--violet); cursor: pointer;
     }
     .pay-primary { background: var(--violet); color: var(--white); }
     .pay-outline { background: var(--white); color: #4c1d95; }
@@ -110,7 +129,14 @@
       width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #cbb6f0;
       background: var(--white); color: var(--text-dark); font-size: 0.95rem;
     }
+    input[type="file"] { padding: 8px; background: #faf5ff; }
     textarea { min-height: 85px; resize: vertical; }
+    .check-row {
+      display: flex; align-items: center; gap: 10px; margin-top: 14px;
+      background: #f5f3ff; border: 1px solid #ddd6fe; padding: 10px 12px; border-radius: 10px;
+    }
+    .check-row input[type="checkbox"] { width: auto; transform: scale(1.15); }
+    .img-pick-note { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
     .btn-purple {
       background: linear-gradient(135deg, var(--violet), #5b21b6); color: var(--white);
       border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer;
@@ -159,6 +185,11 @@
         <p class="bio-text" id="ui-bio">حفيظة فينيكس (hafida fenix)، كاتبة وصاحبة رواية، متخصصة في مرافقة الأفراد في ملفات الهجرة والأوراق والإجراءات الإدارية في إسبانيا، إلى جانب تقديم خدمات الوعي الذاتي والتوازن الداخلي والاستشارات الموجهة.</p>
       </section>
 
+      <section class="card" id="home-featured-section">
+        <h2 class="section-heading">مختارات منشورة على الصفحة الرئيسية (مقالات وفيديوهات)</h2>
+        <div class="grid-cards" id="ui-home-feed"></div>
+      </section>
+
       <div class="acc-item open" id="acc-books">
         <button class="acc-btn" type="button" onclick="toggleAccordion('acc-books')">
           <span>قسم الكتب</span>
@@ -179,6 +210,16 @@
         </div>
       </div>
 
+      <div class="acc-item" id="acc-videos">
+        <button class="acc-btn" type="button" onclick="toggleAccordion('acc-videos')">
+          <span>قسم الفيديوهات</span>
+          <span class="acc-icon">+</span>
+        </button>
+        <div class="acc-body">
+          <div class="grid-cards" id="ui-videos-list"></div>
+        </div>
+      </div>
+
       <div class="acc-item" id="acc-services">
         <button class="acc-btn" type="button" onclick="toggleAccordion('acc-services')">
           <span>قسم خدمات واستشارات</span>
@@ -188,6 +229,11 @@
           <div class="grid-cards" id="ui-services-list"></div>
         </div>
       </div>
+
+      <section class="card" id="latest-book-section">
+        <h2 class="section-heading">إصدار كتاب مميز على الصفحة الرئيسية</h2>
+        <div class="featured-book-box" id="ui-featured-book"></div>
+      </section>
 
       <section id="admin-panel" class="card admin-panel">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
@@ -202,11 +248,13 @@
         <label>العنوان التعريفي المختصر</label>
         <input id="adm-tagline" type="text" />
 
-        <label>رابط صورة الخلفية العلوية (الجزء العلوي فقط)</label>
-        <input id="adm-hero-bg" type="text" />
+        <label>اختيار صورة الخلفية العلوية من ملفات الجهاز</label>
+        <input id="adm-hero-file" type="file" accept="image/*" />
+        <div class="img-pick-note" id="adm-hero-status">لم يتم اختيار ملف جديد بعد (تُستخدم الصورة الحالية).</div>
 
-        <label>رابط الصورة الشخصية</label>
-        <input id="adm-avatar" type="text" />
+        <label>اختيار الصورة الشخصية من ملفات الجهاز</label>
+        <input id="adm-avatar-file" type="file" accept="image/*" />
+        <div class="img-pick-note" id="adm-avatar-status">لم يتم اختيار ملف جديد بعد (تُستخدم الصورة الحالية).</div>
 
         <label>رقم الواتساب (بصيغة دولية بدون أصفار بادئة أو رموز، مثال: 34661073853)</label>
         <input id="adm-whatsapp" type="text" />
@@ -221,30 +269,59 @@
         <textarea id="adm-bio"></textarea>
 
         <div class="action-bar">
-          <button id="save-main-btn" class="btn-purple" type="button">حفظ تعديلات الهوية والدفع والسيرة</button>
+          <button id="save-main-btn" class="btn-purple" type="button">حفظ تعديلات الهوية والصور والدفع والسيرة</button>
         </div>
 
         <hr style="margin:22px 0; border:none; border-top:1px solid var(--border);" />
-        <h3 class="section-heading">إضافة كتاب / مقال يومي / خدمة واستشارة / ملف أو رابط</h3>
+        <h3 class="section-heading">تعديل الكتاب الصادر أخيراً في أسفل الصفحة الرئيسية</h3>
+
+        <label>عنوان الكتاب المميز</label>
+        <input id="adm-fbook-title" type="text" />
+
+        <label>سعر الكتاب (مثال: 19€ أو 25$)</label>
+        <input id="adm-fbook-price" type="text" />
+
+        <label>وصف الكتاب المميز</label>
+        <textarea id="adm-fbook-desc"></textarea>
+
+        <label>رابط الدفع المباشر للكتاب</label>
+        <input id="adm-fbook-link" type="text" />
+
+        <label>اختيار صورة غلاف الكتاب من ملفات الجهاز</label>
+        <input id="adm-fbook-cover" type="file" accept="image/*" />
+        <div class="img-pick-note" id="adm-fbook-cover-status">لم يتم اختيار غلاف جديد بعد.</div>
+
+        <div class="action-bar">
+          <button id="save-fbook-btn" class="btn-purple" type="button">حفظ وتحديث الكتاب المميز</button>
+        </div>
+
+        <hr style="margin:22px 0; border:none; border-top:1px solid var(--border);" />
+        <h3 class="section-heading">إضافة كتاب / مقال يومي / فيديو / خدمة واستشارة / ملف أو رابط</h3>
 
         <label>نوع الإضافة</label>
         <select id="adm-item-type">
-          <option value="book">كتاب (مع رابط دفع)</option>
           <option value="article">مقال يومي</option>
+          <option value="video">فيديو</option>
+          <option value="book">كتاب (مع رابط دفع)</option>
           <option value="service">خدمة أو استشارة</option>
         </select>
 
         <label>العنوان</label>
-        <input id="adm-item-title" type="text" placeholder="مثال: رواية حفيدة فينيكس أو مقال اليوم..." />
+        <input id="adm-item-title" type="text" placeholder="اكتب عنوان المقال أو الفيديو أو الكتاب أو الخدمة..." />
 
         <label>الوصف أو نص المقال</label>
         <textarea id="adm-item-desc" placeholder="اكتب التفاصيل أو محتوى المقال اليومي..."></textarea>
 
-        <label>رابط دفع مباشر أو رابط خارجي (اختياري)</label>
+        <label>رابط دفع مباشر أو رابط فيديو / رابط خارجي (اختياري)</label>
         <input id="adm-item-link" type="text" placeholder="https://..." />
 
-        <label>إرفاق ملف من جهازك (اختياري)</label>
+        <label>إرفاق ملف من جهازك (صورة / فيديو / PDF / ملف)</label>
         <input id="adm-item-file" type="file" />
+
+        <div class="check-row">
+          <input id="adm-show-home" type="checkbox" checked />
+          <label for="adm-show-home" style="margin:0; cursor:pointer;">نشر هذا العنصر على الصفحة الرئيسية (للمقالات والفيديوهات)</label>
+        </div>
 
         <div class="action-bar">
           <button id="add-item-btn" class="btn-purple" type="button">إضافة وحفظ في الموقع</button>
@@ -277,7 +354,7 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "hafida_fenix_site_v1";
+      const STORAGE_KEY = "hafida_fenix_site_v2";
       const ADMIN_PIN = "1234";
 
       const DEFAULT_DATA = {
@@ -289,52 +366,22 @@
         paypal: "https://www.paypal.com",
         bank: "تحويل بنكي مباشر عبر الحساب المعتمد — تواصل عبر واتساب لتأكيد البيانات قبل التحويل.",
         bio: "حفيظة فينيكس (hafida fenix)، كاتبة وصاحبة رواية، متخصصة في مرافقة الأفراد في ملفات الهجرة والأوراق والإجراءات الإدارية في إسبانيا، إلى جانب تقديم خدمات الوعي الذاتي والتوازن الداخلي والاستشارات الموجهة.",
-        books: [
-          {
-            id: "book-1",
-            title: "رواية وإصدارات hafida fenix",
-            desc: "إصدارات أدبية وكتابات ملهمة في الوعي الذاتي والحياة. اختر وسيلة الدفع المناسبة لك أو تواصل مباشرة عبر الواتساب.",
-            payLink: "https://www.paypal.com",
-            fileData: "",
-            fileName: ""
-          }
-        ],
-        articles: [
-          {
-            id: "art-1",
-            title: "مقال يومي: الوعي الذاتي وبداية جديدة",
-            desc: "مساحة يومية للتأمل والوعي الذاتي ومشاركة خواطر وأفكار متجددة لكل زوار الموقع.",
-            link: "",
-            fileData: "",
-            fileName: ""
-          }
-        ],
+        featuredBook: {
+          title: "أحدث إصدار: رواية ووعي hafida fenix",
+          price: "19€",
+          desc: "إصدار جديد يجمع بين العمق الأدبي والوعي الذاتي. يمكنك الدفع مباشرة عبر بايبال أو التحويل البنكي أو التواصل عبر الواتساب لأي طريقة دفع أخرى.",
+          payLink: "https://www.paypal.com",
+          cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=800&q=80"
+        },
+        books: [{ id: "book-1", title: "رواية وإصدارات hafida fenix", desc: "إصدارات أدبية وكتابات ملهمة في الوعي الذاتي والحياة.", payLink: "https://www.paypal.com", fileData: "", fileName: "", showOnHome: false }],
+        articles: [{ id: "art-1", title: "مقال يومي: الوعي الذاتي وبداية جديدة", desc: "مساحة يومية للتأمل والوعي الذاتي ومشاركة خواطر وأفكار متجددة.", link: "", fileData: "", fileName: "", showOnHome: true }],
+        videos: [{ id: "vid-1", title: "رسالة مصورة: الوعي الذاتي ومسارات الهجرة في إسبانيا", desc: "محتوى مرئي لمشاركة التوجيهات والرسائل اليومية.", link: "", fileData: "", fileName: "", showOnHome: true }],
         services: [
-          {
-            id: "srv-1",
-            title: "خدمات الهجرة والأوراق في إسبانيا",
-            desc: "متابعة وتوجيه ومرافقة في ملفات الإقامة والأوراق والوثائق الإدارية في إسبانيا بخطوات واضحة.",
-            link: "",
-            fileData: "",
-            fileName: ""
-          },
-          {
-            id: "srv-2",
-            title: "خدمات الوعي الذاتي والاستشارات",
-            desc: "جلسات واستشارات فردية لدعم الوعي الذاتي والوضوح الداخلي واتخاذ القرار.",
-            link: "",
-            fileData: "",
-            fileName: ""
-          }
+          { id: "srv-1", title: "خدمات الهجرة والأوراق في إسبانيا", desc: "متابعة وتوجيه ومرافقة في ملفات الإقامة والأوراق والوثائق الإدارية في إسبانيا.", link: "", fileData: "", fileName: "", showOnHome: false },
+          { id: "srv-2", title: "خدمات الوعي الذاتي والاستشارات", desc: "جلسات واستشارات فردية لدعم الوعي الذاتي والوضوح الداخلي واتخاذ القرار.", link: "", fileData: "", fileName: "", showOnHome: false }
         ],
-        socials: {
-          instagram: "https://instagram.com",
-          tiktok: "https://tiktok.com",
-          facebook: "https://facebook.com",
-          youtube: "https://youtube.com"
-        }
+        socials: { instagram: "https://instagram.com", tiktok: "https://tiktok.com", facebook: "https://facebook.com", youtube: "https://youtube.com" }
       };
-
       function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
@@ -343,44 +390,40 @@
           return {
             ...structuredClone(DEFAULT_DATA),
             ...parsed,
+            featuredBook: { ...DEFAULT_DATA.featuredBook, ...(parsed.featuredBook || {}) },
             socials: { ...DEFAULT_DATA.socials, ...(parsed.socials || {}) },
             books: Array.isArray(parsed.books) ? parsed.books : structuredClone(DEFAULT_DATA.books),
             articles: Array.isArray(parsed.articles) ? parsed.articles : structuredClone(DEFAULT_DATA.articles),
+            videos: Array.isArray(parsed.videos) ? parsed.videos : structuredClone(DEFAULT_DATA.videos),
             services: Array.isArray(parsed.services) ? parsed.services : structuredClone(DEFAULT_DATA.services)
           };
-        } catch (e) {
-          return structuredClone(DEFAULT_DATA);
-        }
+        } catch (e) { return structuredClone(DEFAULT_DATA); }
       }
 
       let state = loadState();
-
-      function saveState() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      }
-
-      function cleanPhone(num) {
-        return String(num || "").replace(/[^\d]/g, "");
-      }
-
+      let pendingHeroData = null, pendingAvatarData = null, pendingFbookCoverData = null;
+      function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+      function cleanPhone(num) { return String(num || "").replace(/[^\d]/g, ""); }
       function waUrl(text) {
         const phone = cleanPhone(state.whatsapp) || "34661073853";
-        const base = "https://wa.me/" + phone;
-        return text ? base + "?text=" + encodeURIComponent(text) : base;
+        return text ? "https://wa.me/" + phone + "?text=" + encodeURIComponent(text) : "https://wa.me/" + phone;
       }
-
-      window.toggleAccordion = function (id) {
-        const el = document.getElementById(id);
-        if (el) el.classList.toggle("open");
+      window.toggleAccordion = function (id) { const el = document.getElementById(id); if (el) el.classList.toggle("open"); };
+      window.showBankInfo = function () { alert(state.bank || "بيانات التحويل البنكي متوفرة عند التواصل عبر الواتساب."); };
+      window.toggleHomePublish = function (kind, id) {
+        const target = (state[kind] || []).find((x) => x.id === id);
+        if (!target) return;
+        target.showOnHome = !target.showOnHome;
+        saveState(); render();
       };
-
-      window.showBankInfo = function () {
-        alert(state.bank || "بيانات التحويل البنكي متوفرة عند التواصل عبر الواتساب.");
-      };
-
       function renderFileBadge(item) {
         if (!item.fileData || !item.fileName) return "";
         return `<a class="file-link pay-outline" href="${item.fileData}" download="${item.fileName}">تحميل الملف: ${item.fileName}</a>`;
+      }
+      function isDirectVideoFile(u) { return Boolean(u) && (u.startsWith("data:video/") || /\.(mp4|webm|ogg)(\?.*)?$/i.test(u)); }
+      function renderMediaBlock(item) {
+        const src = item.fileData && item.fileData.startsWith("data:video/") ? item.fileData : item.link;
+        return isDirectVideoFile(src) ? `<div class="video-box"><video controls preload="metadata" src="${src}"></video></div>` : "";
       }
 
       function render() {
@@ -391,131 +434,76 @@
         document.getElementById("ui-bio").textContent = state.bio || "";
         document.getElementById("ui-avatar").src = state.avatar || DEFAULT_DATA.avatar;
         document.getElementById("ui-wa-hero").href = waUrl("مرحباً hafida fenix، أود التواصل معكم.");
+        document.querySelector(".hero-top").style.backgroundImage = `linear-gradient(135deg, rgba(46, 16, 101, 0.90), rgba(109, 40, 217, 0.82)), url("${state.heroBg || DEFAULT_DATA.heroBg}")`;
 
-        const heroEl = document.querySelector(".hero-top");
-        const bgUrl = state.heroBg || DEFAULT_DATA.heroBg;
-        heroEl.style.backgroundImage = `linear-gradient(135deg, rgba(46, 16, 101, 0.90), rgba(109, 40, 217, 0.82)), url("${bgUrl}")`;
-
-        const booksEl = document.getElementById("ui-books-list");
-        booksEl.innerHTML = state.books.map((b) => {
-          const pp = (b.payLink && b.payLink.trim()) || state.paypal || "https://www.paypal.com";
-          const waBook = waUrl("مرحباً، أرغب بطلب الكتاب أو الاستفسار عن طرق الدفع لـ: " + b.title);
-          return `
-            <div class="sub-card">
-              <h4>${b.title}</h4>
-              <p>${b.desc}</p>
-              <div class="pay-row">
-                <a class="pay-btn pay-primary" href="${pp}" target="_blank" rel="noopener">الدفع عبر بايبال</a>
-                <button class="pay-btn pay-outline" type="button" onclick="showBankInfo()">تحويل بنكي</button>
-                <a class="pay-btn pay-outline" href="${waBook}" target="_blank" rel="noopener">طرق أخرى / واتساب</a>
-                ${renderFileBadge(b)}
-              </div>
-            </div>
-          `;
-        }).join("");
-
-        const articlesEl = document.getElementById("ui-articles-list");
-        articlesEl.innerHTML = state.articles.map((a) => `
-          <div class="sub-card">
-            <h4>${a.title}</h4>
-            <p>${a.desc}</p>
-            <div class="pay-row">
-              ${a.link ? `<a class="pay-btn pay-primary" href="${a.link}" target="_blank" rel="noopener">فتح الرابط</a>` : ""}
-              ${renderFileBadge(a)}
-            </div>
-          </div>
-        `).join("");
-
-        const servicesEl = document.getElementById("ui-services-list");
-        servicesEl.innerHTML = state.services.map((s) => {
-          const waSrv = waUrl("مرحباً، أود الاستفسار عن خدمة: " + s.title);
-          return `
-            <div class="sub-card">
-              <h4>${s.title}</h4>
-              <p>${s.desc}</p>
-              <div class="pay-row">
-                <a class="pay-btn pay-primary" href="${waSrv}" target="_blank" rel="noopener">حجز / تواصل واتساب</a>
-                ${s.link ? `<a class="pay-btn pay-outline" href="${s.link}" target="_blank" rel="noopener">رابط إضافي</a>` : ""}
-                ${renderFileBadge(s)}
-              </div>
-            </div>
-          `;
-        }).join("");
-
-        const socialMap = [
-          ["إنستغرام", state.socials.instagram],
-          ["تيك توك", state.socials.tiktok],
-          ["فيسبوك", state.socials.facebook],
-          ["يوتيوب", state.socials.youtube]
+        const homeItems = [
+          ...state.articles.filter((a) => a.showOnHome).map((item) => ({ kind: "articles", label: "مقال منشور بالرئيسية", item })),
+          ...state.videos.filter((v) => v.showOnHome).map((item) => ({ kind: "videos", label: "فيديو منشور بالرئيسية", item }))
         ];
-        document.getElementById("ui-social-links").innerHTML = socialMap
-          .filter(([, url]) => url && url.trim())
-          .map(([label, url]) => `<a href="${url}" target="_blank" rel="noopener">${label}</a>`)
-          .join("");
-      }
+        document.getElementById("ui-home-feed").innerHTML = homeItems.length === 0
+          ? `<div class="sub-card"><p style="margin:0;">لا توجد مقالات أو فيديوهات مختارة للصفحة الرئيسية حالياً.</p></div>`
+          : homeItems.map(({ kind, label, item }) => `
+              <div class="sub-card"><span class="badge-home">${label}</span><h4>${item.title}</h4><p>${item.desc}</p>${renderMediaBlock(item)}
+                <div class="pay-row">
+                  ${item.link ? `<a class="pay-btn pay-primary" href="${item.link}" target="_blank" rel="noopener">فتح الرابط</a>` : ""}
+                  ${renderFileBadge(item)}
+                  <button class="pay-btn pay-outline" type="button" onclick="toggleHomePublish('${kind}', '${item.id}')">إزالة من الرئيسية</button>
+                </div>
+              </div>`).join("");
 
+        document.getElementById("ui-books-list").innerHTML = state.books.map((b) => {
+          const pp = (b.payLink && b.payLink.trim()) || state.paypal || "https://www.paypal.com";
+          return `<div class="sub-card"><h4>${b.title}</h4><p>${b.desc}</p><div class="pay-row">
+            <a class="pay-btn pay-primary" href="${pp}" target="_blank" rel="noopener">الدفع عبر بايبال</a>
+            <button class="pay-btn pay-outline" type="button" onclick="showBankInfo()">تحويل بنكي</button>
+            <a class="pay-btn pay-outline" href="${waUrl("طلب الكتاب: " + b.title)}" target="_blank" rel="noopener">طرق أخرى / واتساب</a>
+            ${renderFileBadge(b)}</div></div>`;
+        }).join("");
+
+        document.getElementById("ui-articles-list").innerHTML = state.articles.map((a) => `
+          <div class="sub-card"><span class="badge-home">${a.showOnHome ? "ظاهر في الصفحة الرئيسية" : "في قسم المقالات فقط"}</span><h4>${a.title}</h4><p>${a.desc}</p><div class="pay-row">
+            ${a.link ? `<a class="pay-btn pay-primary" href="${a.link}" target="_blank" rel="noopener">فتح الرابط</a>` : ""}${renderFileBadge(a)}
+            <button class="pay-btn pay-outline" type="button" onclick="toggleHomePublish('articles', '${a.id}')">${a.showOnHome ? "إخفاء من الرئيسية" : "نشر بالرئيسية"}</button></div></div>`).join("");
+
+        document.getElementById("ui-videos-list").innerHTML = state.videos.map((v) => `
+          <div class="sub-card"><span class="badge-home">${v.showOnHome ? "ظاهر في الصفحة الرئيسية" : "في قسم الفيديوهات فقط"}</span><h4>${v.title}</h4><p>${v.desc}</p>${renderMediaBlock(v)}<div class="pay-row">
+            ${v.link ? `<a class="pay-btn pay-primary" href="${v.link}" target="_blank" rel="noopener">مشاهدة / رابط</a>` : ""}${renderFileBadge(v)}
+            <button class="pay-btn pay-outline" type="button" onclick="toggleHomePublish('videos', '${v.id}')">${v.showOnHome ? "إخفاء من الرئيسية" : "نشر بالرئيسية"}</button></div></div>`).join("");
+
+        document.getElementById("ui-services-list").innerHTML = state.services.map((s) => `
+          <div class="sub-card"><h4>${s.title}</h4><p>${s.desc}</p><div class="pay-row">
+            <a class="pay-btn pay-primary" href="${waUrl("استفسار عن خدمة: " + s.title)}" target="_blank" rel="noopener">حجز / تواصل واتساب</a>
+            ${s.link ? `<a class="pay-btn pay-outline" href="${s.link}" target="_blank" rel="noopener">رابط إضافي</a>` : ""}${renderFileBadge(s)}</div></div>`).join("");
+
+        const fb = state.featuredBook || DEFAULT_DATA.featuredBook;
+        const fbPay = (fb.payLink && fb.payLink.trim()) || state.paypal || "https://www.paypal.com";
+        document.getElementById("ui-featured-book").innerHTML = `
+          <div><img class="featured-cover" src="${fb.cover || DEFAULT_DATA.featuredBook.cover}" alt="${fb.title}" /></div>
+          <div><h3 class="section-heading" style="margin-bottom:6px;">${fb.title}</h3>
+            ${fb.price ? `<div class="price-pill">السعر: ${fb.price}</div>` : ""}
+            <p style="color:var(--text-muted); white-space:pre-line;">${fb.desc}</p>
+            <div class="pay-row">
+              <a class="pay-btn pay-primary" href="${fbPay}" target="_blank" rel="noopener">رابط الدفع / بايبال</a>
+              <button class="pay-btn pay-outline" type="button" onclick="showBankInfo()">تحويل بنكي</button>
+              <a class="pay-btn pay-outline" href="${waUrl("طلب الكتاب المميز: " + fb.title + " - السعر: " + (fb.price || ""))}" target="_blank" rel="noopener">طرق أخرى / واتساب</a>
+            </div></div>`;
+
+        document.getElementById("ui-social-links").innerHTML = [["إنستغرام", state.socials.instagram], ["تيك توك", state.socials.tiktok], ["فيسبوك", state.socials.facebook], ["يوتيوب", state.socials.youtube]]
+          .filter(([, u]) => u && u.trim()).map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${l}</a>`).join("");
+      }
       function fillAdminInputs() {
         document.getElementById("adm-name").value = state.name || "";
         document.getElementById("adm-tagline").value = state.tagline || "";
-        document.getElementById("adm-hero-bg").value = state.heroBg || "";
-        document.getElementById("adm-avatar").value = state.avatar || "";
         document.getElementById("adm-whatsapp").value = state.whatsapp || "";
         document.getElementById("adm-paypal").value = state.paypal || "";
         document.getElementById("adm-bank").value = state.bank || "";
         document.getElementById("adm-bio").value = state.bio || "";
+        const fb = state.featuredBook || DEFAULT_DATA.featuredBook;
+        document.getElementById("adm-fbook-title").value = fb.title || "";
+        document.getElementById("adm-fbook-price").value = fb.price || "";
+        document.getElementById("adm-fbook-desc").value = fb.desc || "";
+        document.getElementById("adm-fbook-link").value = fb.payLink || "";
       }
-
-      const modal = document.getElementById("pin-modal");
-      const pinInput = document.getElementById("pin-input");
-      const pinError = document.getElementById("pin-error");
-      const adminPanel = document.getElementById("admin-panel");
-      const statusMsg = document.getElementById("admin-status");
-
-      document.getElementById("open-admin-btn").addEventListener("click", function () {
-        pinError.textContent = "";
-        pinInput.value = "";
-        modal.classList.add("show");
-        setTimeout(() => pinInput.focus(), 60);
-      });
-
-      document.getElementById("pin-cancel-btn").addEventListener("click", function () {
-        modal.classList.remove("show");
-      });
-
-      function checkPin() {
-        if (pinInput.value.trim() === ADMIN_PIN) {
-          modal.classList.remove("show");
-          fillAdminInputs();
-          adminPanel.classList.add("show");
-          statusMsg.textContent = "تم فتح لوحة الإدارة بنجاح.";
-          adminPanel.scrollIntoView({ behavior: "smooth" });
-        } else {
-          pinError.textContent = "الرمز السري غير صحيح.";
-        }
-      }
-
-      document.getElementById("pin-submit-btn").addEventListener("click", checkPin);
-      pinInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") checkPin();
-      });
-
-      document.getElementById("lock-admin-btn").addEventListener("click", function () {
-        adminPanel.classList.remove("show");
-      });
-
-      document.getElementById("save-main-btn").addEventListener("click", function () {
-        state.name = document.getElementById("adm-name").value.trim() || "hafida fenix";
-        state.tagline = document.getElementById("adm-tagline").value.trim();
-        state.heroBg = document.getElementById("adm-hero-bg").value.trim() || DEFAULT_DATA.heroBg;
-        state.avatar = document.getElementById("adm-avatar").value.trim() || DEFAULT_DATA.avatar;
-        state.whatsapp = cleanPhone(document.getElementById("adm-whatsapp").value) || "34661073853";
-        state.paypal = document.getElementById("adm-paypal").value.trim() || "https://www.paypal.com";
-        state.bank = document.getElementById("adm-bank").value.trim();
-        state.bio = document.getElementById("adm-bio").value.trim();
-        saveState();
-        render();
-        statusMsg.textContent = "تم حفظ التعديلات وتحديث الموقع فوراً.";
-      });
 
       function readFileAsDataUrl(file) {
         return new Promise((resolve) => {
@@ -527,47 +515,87 @@
         });
       }
 
+      document.getElementById("adm-hero-file").addEventListener("change", async function (e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const res = await readFileAsDataUrl(file);
+        if (res.fileData) { pendingHeroData = res.fileData; document.getElementById("adm-hero-status").textContent = "تم اختيار صورة الخلفية: " + file.name; }
+      });
+
+      document.getElementById("adm-avatar-file").addEventListener("change", async function (e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const res = await readFileAsDataUrl(file);
+        if (res.fileData) { pendingAvatarData = res.fileData; document.getElementById("adm-avatar-status").textContent = "تم اختيار الصورة الشخصية: " + file.name; }
+      });
+
+      document.getElementById("adm-fbook-cover").addEventListener("change", async function (e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const res = await readFileAsDataUrl(file);
+        if (res.fileData) { pendingFbookCoverData = res.fileData; document.getElementById("adm-fbook-cover-status").textContent = "تم اختيار غلاف الكتاب: " + file.name; }
+      });
+
+      const modal = document.getElementById("pin-modal"), pinInput = document.getElementById("pin-input"), pinError = document.getElementById("pin-error"), adminPanel = document.getElementById("admin-panel"), statusMsg = document.getElementById("admin-status");
+      document.getElementById("open-admin-btn").addEventListener("click", function () { pinError.textContent = ""; pinInput.value = ""; modal.classList.add("show"); setTimeout(() => pinInput.focus(), 60); });
+      document.getElementById("pin-cancel-btn").addEventListener("click", function () { modal.classList.remove("show"); });
+      function checkPin() {
+        if (pinInput.value.trim() === ADMIN_PIN) { modal.classList.remove("show"); fillAdminInputs(); adminPanel.classList.add("show"); statusMsg.textContent = "تم فتح لوحة الإدارة بنجاح."; adminPanel.scrollIntoView({ behavior: "smooth" }); }
+        else { pinError.textContent = "الرمز السري غير صحيح."; }
+      }
+      document.getElementById("pin-submit-btn").addEventListener("click", checkPin);
+      pinInput.addEventListener("keydown", function (e) { if (e.key === "Enter") checkPin(); });
+      document.getElementById("lock-admin-btn").addEventListener("click", function () { adminPanel.classList.remove("show"); });
+
+      document.getElementById("save-main-btn").addEventListener("click", function () {
+        state.name = document.getElementById("adm-name").value.trim() || "hafida fenix";
+        state.tagline = document.getElementById("adm-tagline").value.trim();
+        state.whatsapp = cleanPhone(document.getElementById("adm-whatsapp").value) || "34661073853";
+        state.paypal = document.getElementById("adm-paypal").value.trim() || "https://www.paypal.com";
+        state.bank = document.getElementById("adm-bank").value.trim();
+        state.bio = document.getElementById("adm-bio").value.trim();
+        if (pendingHeroData) state.heroBg = pendingHeroData;
+        if (pendingAvatarData) state.avatar = pendingAvatarData;
+        saveState(); render();
+        statusMsg.textContent = "تم حفظ التعديلات والصور وتحديث الموقع فوراً.";
+      });
+
+      document.getElementById("save-fbook-btn").addEventListener("click", function () {
+        const currentFb = state.featuredBook || DEFAULT_DATA.featuredBook;
+        state.featuredBook = {
+          title: document.getElementById("adm-fbook-title").value.trim() || currentFb.title,
+          price: document.getElementById("adm-fbook-price").value.trim(),
+          desc: document.getElementById("adm-fbook-desc").value.trim(),
+          payLink: document.getElementById("adm-fbook-link").value.trim() || state.paypal || "https://www.paypal.com",
+          cover: pendingFbookCoverData || currentFb.cover || DEFAULT_DATA.featuredBook.cover
+        };
+        saveState(); render();
+        statusMsg.textContent = "تم تحديث الكتاب المميز وسعره ورابط الدفع والصورة في أسفل الصفحة الرئيسية.";
+      });
+
       document.getElementById("add-item-btn").addEventListener("click", async function () {
         const type = document.getElementById("adm-item-type").value;
         const title = document.getElementById("adm-item-title").value.trim();
         const desc = document.getElementById("adm-item-desc").value.trim();
         const link = document.getElementById("adm-item-link").value.trim();
+        const showOnHome = document.getElementById("adm-show-home").checked;
         const fileInput = document.getElementById("adm-item-file");
         const fileObj = await readFileAsDataUrl(fileInput.files && fileInput.files[0]);
-
-        if (!title) {
-          statusMsg.textContent = "يرجى إدخال العنوان أولاً.";
-          return;
-        }
-
-        const newItem = {
-          id: "item-" + Date.now(),
-          title,
-          desc,
-          link,
-          payLink: link,
-          fileData: fileObj.fileData,
-          fileName: fileObj.fileName
-        };
-
+        if (!title) { statusMsg.textContent = "يرجى إدخال العنوان أولاً."; return; }
+        const newItem = { id: "item-" + Date.now(), title, desc, link, payLink: link, fileData: fileObj.fileData, fileName: fileObj.fileName, showOnHome: (type === "article" || type === "video") ? showOnHome : false };
         if (type === "book") state.books.unshift(newItem);
         else if (type === "article") state.articles.unshift(newItem);
+        else if (type === "video") state.videos.unshift(newItem);
         else state.services.unshift(newItem);
-
-        saveState();
-        render();
-        document.getElementById("adm-item-title").value = "";
-        document.getElementById("adm-item-desc").value = "";
-        document.getElementById("adm-item-link").value = "";
-        fileInput.value = "";
+        saveState(); render();
+        document.getElementById("adm-item-title").value = ""; document.getElementById("adm-item-desc").value = ""; document.getElementById("adm-item-link").value = ""; fileInput.value = "";
         statusMsg.textContent = "تمت الإضافة وحفظ العنصر بنجاح.";
       });
 
       document.getElementById("reset-all-btn").addEventListener("click", function () {
+        pendingHeroData = null; pendingAvatarData = null; pendingFbookCoverData = null;
         state = structuredClone(DEFAULT_DATA);
-        saveState();
-        fillAdminInputs();
-        render();
+        saveState(); fillAdminInputs(); render();
         statusMsg.textContent = "تمت استعادة البيانات الافتراضية.";
       });
 
