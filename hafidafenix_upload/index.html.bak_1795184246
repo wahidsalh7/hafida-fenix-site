@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حفيظة فينيكس | Hafida Fénix</title>
+  <style>
+    :root {
+      --primary: #5b21b6;
+      --primary-dark: #3b0764;
+      --primary-light: #ede9fe;
+      --accent: #7c3aed;
+      --bg-page: #f8f7fc;
+      --bg-card: #ffffff;
+      --text-main: #1e1b4b;
+      --text-muted: #5b5877;
+      --border: #ddd6fe;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.7;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: #ffffff;
+      padding: 1rem 1.25rem;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      box-shadow: 0 4px 16px rgba(59, 7, 100, 0.18);
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .brand h1 { font-size: 1.35rem; font-weight: 800; }
+    .brand span { display: block; font-size: 0.85rem; opacity: 0.9; }
+    .header-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+
+    select, button, input, textarea { font-family: inherit; font-size: 0.92rem; }
+
+    .lang-select {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 8px;
+      padding: 0.45rem 0.75rem;
+      cursor: pointer;
+    }
+
+    .lang-select option { color: #1e1b4b; background: #ffffff; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      border: none;
+      border-radius: 10px;
+      padding: 0.58rem 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); opacity: 0.96; }
+    .btn-white { background: #ffffff; color: var(--primary-dark); }
+    .btn-primary { background: var(--primary); color: #ffffff; }
+    .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+    .btn-danger { background: #b91c1c; color: #ffffff; }
+
+    .hero {
+      background: linear-gradient(160deg, var(--primary-dark) 0%, var(--primary) 65%, var(--accent) 100%);
+      color: #ffffff;
+      padding: 3rem 1.25rem;
+    }
+
+    .hero-inner { max-width: 1120px; margin: 0 auto; }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero h2 { font-size: clamp(1.6rem, 3.5vw, 2.5rem); line-height: 1.3; margin-bottom: 1rem; max-width: 820px; }
+    .hero p { font-size: 1.03rem; max-width: 780px; color: #f5f3ff; margin-bottom: 1.5rem; }
+    .action-bar { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+
+    main { max-width: 1120px; margin: 0 auto; padding: 2rem 1.25rem 3.5rem; display: grid; gap: 2rem; }
+
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 6px 20px rgba(91, 33, 182, 0.06);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.1rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .section-header h3 { font-size: 1.25rem; color: var(--primary-dark); }
+    .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; }
+
+    .item-box {
+      border: 1px solid var(--border);
+      background: #fcfbff;
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .item-box h4 { color: var(--primary-dark); font-size: 1.05rem; }
+    .item-box p { color: var(--text-muted); font-size: 0.94rem; }
+
+    .media-frame {
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #140926;
+      aspect-ratio: 16 / 9;
+    }
+
+    .media-frame iframe, .media-frame video { width: 100%; height: 100%; border: 0; display: block; }
+
+    .file-link {
+      display: inline-block;
+      margin-top: 0.35rem;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      word-break: break-all;
+    }
+
+    .payment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+
+    .payment-box {
+      background: var(--primary-light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem;
+    }
+
+    .payment-box h4 { color: var(--primary-dark); margin-bottom: 0.45rem; }
+    .payment-box p { color: var(--text-main); font-size: 0.95rem; margin-bottom: 0.8rem; word-break: break-word; }
+
+    footer { background: var(--primary-dark); color: #ede9fe; text-align: center; padding: 1.5rem 1rem; font-size: 0.9rem; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(19, 7, 38, 0.72);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-panel {
+      width: 100%;
+      max-width: 820px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 1.5rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+    }
+
+    .modal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-top h3 { color: var(--primary-dark); font-size: 1.2rem; }
+    .admin-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+
+    .tab-btn {
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-page);
+      color: var(--primary-dark);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active { background: var(--primary); color: #ffffff; border-color: var(--primary); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: grid; gap: 0.9rem; }
+    .field-group { display: grid; gap: 0.35rem; }
+    .field-group label { font-weight: 700; font-size: 0.9rem; color: var(--primary-dark); }
+
+    .field-group input, .field-group textarea, .field-group select {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid #c4b5fd;
+      border-radius: 9px;
+      background: #ffffff;
+      color: var(--text-main);
+    }
+
+    .field-group textarea { min-height: 85px; resize: vertical; }
+    .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem; }
+    .admin-list { display: grid; gap: 0.6rem; margin-top: 0.5rem; }
+
+    .admin-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-page);
+    }
+
+    .status-msg {
+      padding: 0.65rem 0.9rem;
+      border-radius: 9px;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      font-weight: 600;
+      display: none;
+    }
+
+    .status-msg.show { display: block; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <h1 id="ui-site-title">حفيظة فينيكس</h1>
+        <span id="ui-site-subtitle">Hafida Fénix</span>
+      </div>
+      <div class="header-controls">
+        <select id="langSwitcher" class="lang-select" aria-label="Language">
+          <option value="ar">العربية</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+        </select>
+        <button type="button" class="btn btn-white" id="openAdminBtn">الإدارة</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge" id="ui-badge">الوعي الذاتي • الكتب • الهجرة في إسبانيا</div>
+      <h2 id="ui-hero-title">النهوض من قلب التحديات.. نحو الأنوثة والوعي والاستقرار</h2>
+      <p id="ui-hero-desc">
+        حفيظة زهاني (حفيظة فينيكس) — خبرة في إسبانيا وعمل سابق في مكتب محاماة لتبسيط المساطر والوثائق، إلى جانب الكتابة وتدريب الوعي الذاتي.
+      </p>
+      <div class="action-bar">
+        <a href="#" class="btn btn-white" id="btnCallLink">اتصال مباشر</a>
+        <a href="#" class="btn btn-white" id="btnBookLink">حجز استشارة</a>
+        <a href="#books-section" class="btn btn-white" id="btnBooksLink">شراء الكتب</a>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section class="section-card" id="services-section">
+      <div class="section-header"><h3 id="ui-services-title">الأقسام والخدمات</h3></div>
+      <div class="grid-cards" id="servicesContainer"></div>
+    </section>
+
+    <section class="section-card" id="books-section">
+      <div class="section-header"><h3 id="ui-books-title">الكتب والروايات</h3></div>
+      <div class="grid-cards" id="booksContainer"></div>
+    </section>
+
+    <section class="section-card" id="media-section">
+      <div class="section-header"><h3 id="ui-media-title">الفيديوهات والملفات</h3></div>
+      <div class="grid-cards" id="mediaContainer"></div>
+    </section>
+
+    <section class="section-card" id="payments-section">
+      <div class="section-header"><h3 id="ui-payments-title">وسائل الدفع والحجز</h3></div>
+      <div class="payment-grid">
+        <div class="payment-box">
+          <h4 id="ui-paypal-label">الدفع عبر PayPal</h4>
+          <p id="ui-paypal-info">أضف رابط الدفع الخاص بـ PayPal من لوحة الإدارة.</p>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary" id="btnPaypalLink">فتح رابط PayPal</a>
+        </div>
+        <div class="payment-box">
+          <h4 id="ui-bank-label">التحويل البنكي</h4>
+          <p id="ui-bank-info">أضف بيانات الحساب البنكي أو IBAN من لوحة الإدارة.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p id="ui-footer-text">جميع الحقوق محفوظة © حفيظة فينيكس | Hafida Fénix</p>
+  </footer>
+
+  <div class="modal-backdrop" id="adminModal" aria-hidden="true">
+    <div class="modal-panel">
+      <div class="modal-top">
+        <h3 id="modalTitle">دخول الإدارة</h3>
+        <button type="button" class="btn btn-outline" id="closeModalBtn">إغلاق</button>
+      </div>
+
+      <div id="loginBox">
+        <div class="field-group">
+          <label for="adminPassInput">كلمة مرور الإدارة</label>
+          <input type="password" id="adminPassInput" placeholder="أدخل كلمة المرور" />
+        </div>
+        <br />
+        <button type="button" class="btn btn-primary" id="loginSubmitBtn">دخول إلى لوحة التحكم</button>
+        <p id="loginError" style="color: #b91c1c; margin-top: 0.6rem; display: none;">كلمة المرور غير صحيحة.</p>
+      </div>
+
+      <div id="dashboardBox" style="display: none;">
+        <div class="status-msg" id="saveStatus">تم حفظ التعديلات بنجاح.</div>
+
+        <div class="admin-tabs">
+          <button type="button" class="tab-btn active" data-tab="tabGeneral">النصوص واللغات</button>
+          <button type="button" class="tab-btn" data-tab="tabContent">الأقسام والكتب والفيديو</button>
+          <button type="button" class="tab-btn" data-tab="tabPayments">الدفع والأزرار</button>
+          <button type="button" class="tab-btn" data-tab="tabAppearance">الخلفيات والأمان</button>
+        </div>
+
+        <div class="tab-pane active" id="tabGeneral">
+          <div class="field-group">
+            <label for="editLangTarget">اللغة التي تريد تعديل نصوصها</label>
+            <select id="editLangTarget">
+              <option value="ar">العربية</option>
+              <option value="fr">Français</option>
+              <option value="es">Español</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="editBadge">الشارة العلوية</label>
+            <input type="text" id="editBadge" />
+          </div>
+          <div class="field-group">
+            <label for="editHeroTitle">العنوان الرئيسي</label>
+            <input type="text" id="editHeroTitle" />
+          </div>
+          <div class="field-group">
+            <label for="editHeroDesc">النبذة التعريفية</label>
+            <textarea id="editHeroDesc"></textarea>
+          </div>
+          <button type="button" class="btn btn-primary" id="saveLangBtn">حفظ نصوص اللغة المختارة</button>
+        </div>
+
+        <div class="tab-pane" id="tabContent">
+          <div class="field-group">
+            <label for="newItemType">نوع العنصر المراد إضافته</label>
+            <select id="newItemType">
+              <option value="services">قسم / خدمة جديدة</option>
+              <option value="books">كتاب / رواية جديدة</option>
+              <option value="media">فيديو أو ملف جديد</option>
+            </select>
+          </div>
+          <div class="two-col">
+            <div class="field-group">
+              <label for="newItemTitle">العنوان</label>
+              <input type="text" id="newItemTitle" placeholder="مثال: إرشاد الهجرة في إسبانيا" />
+            </div>
+            <div class="field-group">
+              <label for="newItemLink">رابط (شراء / فيديو يوتيوب أو MP4 / ملف)</label>
+              <input type="text" id="newItemLink" placeholder="https://..." />
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="newItemDesc">الوصف أو التفاصيل</label>
+            <textarea id="newItemDesc" placeholder="اكتب وصفاً واضحاً ومختصراً..."></textarea>
+          </div>
+          <button type="button" class="btn btn-primary" id="addItemBtn">إضافة العنصر</button>
+
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 0.5rem 0;" />
+          <strong>العناصر الحالية (يمكنك حذف أي عنصر):</strong>
+          <div class="admin-list" id="adminItemsList"></div>
+        </div>
+
+        <div class="tab-pane" id="tabPayments">
+          <div class="two-col">
+            <div class="field-group">
+              <label for="editCallUrl">رابط أو رقم زر الاتصال (مثال: tel:+34600000000)</label>
+              <input type="text" id="editCallUrl" />
+            </div>
+            <div class="field-group">
+              <label for="editBookUrl">رابط زر حجز استشارة</label>
+              <input type="text" id="editBookUrl" />
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="field-group">
+              <label for="editPaypalUrl">رابط الدفع عبر PayPal</label>
+              <input type="text" id="editPaypalUrl" />
+            </div>
+            <div class="field-group">
+              <label for="editPaypalNote">نص توضيحي لـ PayPal</label>
+              <input type="text" id="editPaypalNote" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="editBankDetails">بيانات الحساب البنكي (اسم البنك، IBAN، المستفيد)</label>
+            <textarea id="editBankDetails"></textarea>
+          </div>
+          <button type="button" class="btn btn-primary" id="savePaymentsBtn">حفظ روابط الدفع والأزرار</button>
+        </div>
+
+        <div class="tab-pane" id="tabAppearance">
+          <div class="two-col">
+            <div class="field-group">
+              <label for="editPrimaryColor">اللون البنفسجي الأساسي</label>
+              <input type="color" id="editPrimaryColor" />
+            </div>
+            <div class="field-group">
+              <label for="editBgColor">لون خلفية الصفحة</label>
+              <input type="color" id="editBgColor" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="editHeroBgImage">رابط صورة خلفية للهيرو (اختياري)</label>
+            <input type="text" id="editHeroBgImage" placeholder="https://..." />
+          </div>
+          <div class="field-group">
+            <label for="editNewPass">تغيير كلمة مرور الإدارة</label>
+            <input type="text" id="editNewPass" placeholder="اتركه فارغاً للإبقاء على كلمة المرور الحالية" />
+          </div>
+          <div class="action-bar">
+            <button type="button" class="btn btn-primary" id="saveAppearanceBtn">حفظ المظهر والإعدادات</button>
+            <button type="button" class="btn btn-outline" id="exportJsonBtn">تصدير نسخة احتياطية JSON</button>
+            <button type="button" class="btn btn-danger" id="resetDefaultBtn">استعادة الافتراضي</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "hafida_fenix_site_v1";
+
+    const DEFAULT_STATE = {
+      lang: "ar",
+      adminPass: "1234",
+      theme: {
+        primary: "#5b21b6",
+        bgPage: "#f8f7fc",
+        heroBgImage: ""
+      },
+      texts: {
+        ar: {
+          dir: "rtl",
+          siteTitle: "حفيظة فينيكس",
+          siteSubtitle: "Hafida Fénix",
+          badge: "الوعي الذاتي • الكتب • الهجرة في إسبانيا",
+          heroTitle: "النهوض من قلب التحديات.. نحو الأنوثة والوعي والاستقرار",
+          heroDesc: "حفيظة زهاني (حفيظة فينيكس) — خبرة في إسبانيا وعمل سابق في مكتب محاماة لتبسيط المساطر والوثائق، إلى جانب الكتابة وتدريب الوعي الذاتي.",
+          callBtn: "اتصال مباشر",
+          bookBtn: "حجز استشارة",
+          booksBtn: "شراء الكتب",
+          servicesTitle: "الأقسام والخدمات",
+          booksTitle: "الكتب والروايات",
+          mediaTitle: "الفيديوهات والملفات",
+          paymentsTitle: "وسائل الدفع والحجز",
+          paypalLabel: "الدفع عبر PayPal",
+          paypalBtn: "فتح رابط PayPal",
+          bankLabel: "التحويل البنكي",
+          footerText: "جميع الحقوق محفوظة © حفيظة فينيكس | Hafida Fénix"
+        },
+        fr: {
+          dir: "ltr",
+          siteTitle: "Hafida Fénix",
+          siteSubtitle: "حفيظة فينيكس",
+          badge: "Conscience de soi • Livres • Accompagnement en Espagne",
+          heroTitle: "Se relever au cœur des défis.. vers la féminité, la conscience et la stabilité",
+          heroDesc: "Hafida Zehani (Hafida Fénix) — expérience en Espagne et ancien cabinet juridique pour simplifier les démarches, avec l'écriture et le coaching de conscience de soi.",
+          callBtn: "Appel direct",
+          bookBtn: "Réserver une séance",
+          booksBtn: "Acheter les livres",
+          servicesTitle: "Sections et services",
+          booksTitle: "Livres et romans",
+          mediaTitle: "Vidéos et fichiers",
+          paymentsTitle: "Paiement et réservation",
+          paypalLabel: "Paiement via PayPal",
+          paypalBtn: "Ouvrir PayPal",
+          bankLabel: "Virement bancaire",
+          footerText: "Tous droits réservés © Hafida Fénix"
+        },
+        es: {
+          dir: "ltr",
+          siteTitle: "Hafida Fénix",
+          siteSubtitle: "حفيظة فينيكس",
+          badge: "Conciencia personal • Libros • Orientación en España",
+          heroTitle: "Resurgir desde los retos.. hacia la feminidad, la conciencia y la estabilidad",
+          heroDesc: "Hafida Zehani (Hafida Fénix) — experiencia en España y despacho jurídico para facilitar trámites, junto con la escritura y el acompañamiento de conciencia personal.",
+          callBtn: "Llamada directa",
+          bookBtn: "Reservar consulta",
+          booksBtn: "Comprar libros",
+          servicesTitle: "Secciones y servicios",
+          booksTitle: "Libros y novelas",
+          mediaTitle: "Vídeos y archivos",
+          paymentsTitle: "Pago y reserva",
+          paypalLabel: "Pago con PayPal",
+          paypalBtn: "Abrir PayPal",
+          bankLabel: "Transferencia bancaria",
+          footerText: "Todos los derechos reservados © Hafida Fénix"
+        }
+      },
+      contacts: {
+        callUrl: "tel:+34600000000",
+        bookUrl: "#payments-section",
+        paypalUrl: "https://www.paypal.com",
+        paypalNote: "أدخل رابط الدفع الخاص بك عبر PayPal لتفعيل زر الدفع الفوري.",
+        bankDetails: "أدخل اسم البنك ورقم الحساب / IBAN واسم المستفيد من لوحة الإدارة."
+      },
+      items: [
+        {
+          id: "srv-1",
+          type: "services",
+          title: "الوعي الذاتي والأنوثة",
+          desc: "جلسات ومحتوى إرشادي لتعزيز الثقة، التوازن الداخلي، والنهوض بعد المراحل الانتقالية.",
+          link: ""
+        },
+        {
+          id: "srv-2",
+          type: "services",
+          title: "إرشاد الهجرة والمساطر في إسبانيا",
+          desc: "توضيح الخطوات العملية وتنظيم الوثائق والمعلومات الإرشادية المرتبطة بالإقامة والاستقرار.",
+          link: ""
+        },
+        {
+          id: "bk-1",
+          type: "books",
+          title: "إصدارات حفيظة فينيكس",
+          desc: "كتب وروايات تناقش التجربة الإنسانية والوعي الذاتي. يمكنك إضافة روابط الشراء لكل كتاب من الإدارة.",
+          link: "#payments-section"
+        }
+      ]
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(DEFAULT_STATE);
+        const parsed = JSON.parse(raw);
+        return {
+          ...structuredClone(DEFAULT_STATE),
+          ...parsed,
+          theme: { ...DEFAULT_STATE.theme, ...(parsed.theme || {}) },
+          contacts: { ...DEFAULT_STATE.contacts, ...(parsed.contacts || {}) },
+          texts: {
+            ar: { ...DEFAULT_STATE.texts.ar, ...((parsed.texts && parsed.texts.ar) || {}) },
+            fr: { ...DEFAULT_STATE.texts.fr, ...((parsed.texts && parsed.texts.fr) || {}) },
+            es: { ...DEFAULT_STATE.texts.es, ...((parsed.texts && parsed.texts.es) || {}) }
+          },
+          items: Array.isArray(parsed.items) ? parsed.items : structuredClone(DEFAULT_STATE.items)
+        };
+      } catch {
+        return structuredClone(DEFAULT_STATE);
+      }
+    }
+
+    let state = loadState();
+    let isAuthenticated = false;
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderSite();
+      renderAdminItems();
+      showSavedNotice();
+    }
+
+    function showSavedNotice() {
+      const el = document.getElementById("saveStatus");
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2500);
+    }
+
+    function getYoutubeEmbedUrl(url) {
+      if (!url) return "";
+      const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{6,})/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+    }
+
+    function renderSite() {
+      const lang = state.lang || "ar";
+      const t = state.texts[lang] || state.texts.ar;
+
+      document.documentElement.lang = lang;
+      document.documentElement.dir = t.dir;
+      document.getElementById("langSwitcher").value = lang;
+
+      document.documentElement.style.setProperty("--primary", state.theme.primary);
+      document.documentElement.style.setProperty("--bg-page", state.theme.bgPage);
+
+      const heroEl = document.querySelector(".hero");
+      if (state.theme.heroBgImage) {
+        heroEl.style.backgroundImage = `linear-gradient(160deg, rgba(59, 7, 100, 0.86), rgba(91, 33, 182, 0.86)), url("${state.theme.heroBgImage.replace(/"/g, "")}")`;
+        heroEl.style.backgroundSize = "cover";
+        heroEl.style.backgroundPosition = "center";
+      } else {
+        heroEl.style.backgroundImage = "";
+      }
+
+      document.getElementById("ui-site-title").textContent = t.siteTitle;
+      document.getElementById("ui-site-subtitle").textContent = t.siteSubtitle;
+      document.getElementById("ui-badge").textContent = t.badge;
+      document.getElementById("ui-hero-title").textContent = t.heroTitle;
+      document.getElementById("ui-hero-desc").textContent = t.heroDesc;
+      document.getElementById("btnCallLink").textContent = t.callBtn;
+      document.getElementById("btnBookLink").textContent = t.bookBtn;
+      document.getElementById("btnBooksLink").textContent = t.booksBtn;
+      document.getElementById("ui-services-title").textContent = t.servicesTitle;
+      document.getElementById("ui-books-title").textContent = t.booksTitle;
+      document.getElementById("ui-media-title").textContent = t.mediaTitle;
+      document.getElementById("ui-payments-title").textContent = t.paymentsTitle;
+      document.getElementById("ui-paypal-label").textContent = t.paypalLabel;
+      document.getElementById("btnPaypalLink").textContent = t.paypalBtn;
+      document.getElementById("ui-bank-label").textContent = t.bankLabel;
+      document.getElementById("ui-footer-text").textContent = t.footerText;
+
+      document.getElementById("btnCallLink").href = state.contacts.callUrl || "#";
+      document.getElementById("btnBookLink").href = state.contacts.bookUrl || "#payments-section";
+      document.getElementById("btnPaypalLink").href = state.contacts.paypalUrl || "#";
+      document.getElementById("ui-paypal-info").textContent = state.contacts.paypalNote || "";
+      document.getElementById("ui-bank-info").textContent = state.contacts.bankDetails || "";
+
+      renderSectionItems("services", "servicesContainer", t.bookBtn);
+      renderSectionItems("books", "booksContainer", t.booksBtn);
+      renderMediaItems("mediaContainer");
+    }
+
+    function renderSectionItems(type, containerId, linkLabel) {
+      const container = document.getElementById(containerId);
+      const list = state.items.filter((item) => item.type === type);
+      container.innerHTML = "";
+
+      if (!list.length) {
+        container.innerHTML = `<p style="color: var(--text-muted);">لا توجد عناصر مضافة في هذا القسم حالياً.</p>`;
+        return;
+      }
+
+      list.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "item-box";
+
+        const titleEl = document.createElement("h4");
+        titleEl.textContent = item.title;
+
+        const descEl = document.createElement("p");
+        descEl.textContent = item.desc;
+
+        card.appendChild(titleEl);
+        card.appendChild(descEl);
+
+        if (item.link) {
+          const a = document.createElement("a");
+          a.className = "btn btn-primary";
+          a.href = item.link;
+          a.textContent = linkLabel;
+          if (item.link.startsWith("http")) {
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+          }
+          card.appendChild(a);
+        }
+
+        container.appendChild(card);
+      });
+    }
+
+    function renderMediaItems(containerId) {
+      const container = document.getElementById(containerId);
+      const list = state.items.filter((item) => item.type === "media");
+      container.innerHTML = "";
+
+      if (!list.length) {
+        container.innerHTML = `<p style="color: var(--text-muted);">أضف رابط فيديو أو ملف من لوحة الإدارة ليظهر هنا.</p>`;
+        return;
+      }
+
+      list.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "item-box";
+
+        const titleEl = document.createElement("h4");
+        titleEl.textContent = item.title;
+        card.appendChild(titleEl);
+
+        const ytEmbed = getYoutubeEmbedUrl(item.link || "");
+        if (ytEmbed) {
+          const frame = document.createElement("div");
+          frame.className = "media-frame";
+          const cleanIframe = document.createElement("iframe");
+          cleanIframe.src = ytEmbed;
+          cleanIframe.title = item.title;
+          cleanIframe.loading = "lazy";
+          cleanIframe.allowFullscreen = true;
+          frame.appendChild(cleanIframe);
+          card.appendChild(frame);
+        } else if (item.link && /\.(mp4|webm|ogg)(\?.*)?$/i.test(item.link)) {
+          const frame = document.createElement("div");
+          frame.className = "media-frame";
+          const video = document.createElement("video");
+          video.src = item.link;
+          video.controls = true;
+          frame.appendChild(video);
+          card.appendChild(frame);
+        } else if (item.link) {
+          const linkEl = document.createElement("a");
+          linkEl.className = "file-link";
+          linkEl.href = item.link;
+          linkEl.target = "_blank";
+          linkEl.rel = "noopener noreferrer";
+          linkEl.textContent = item.link;
+          card.appendChild(linkEl);
+        }
+
+        if (item.desc) {
+          const descEl = document.createElement("p");
+          descEl.textContent = item.desc;
+          card.appendChild(descEl);
+        }
+
+        container.appendChild(card);
+      });
+    }
+
+    function populateAdminForms() {
+      const targetLang = document.getElementById("editLangTarget").value || state.lang || "ar";
+      const t = state.texts[targetLang];
+
+      document.getElementById("editBadge").value = t.badge;
+      document.getElementById("editHeroTitle").value = t.heroTitle;
+      document.getElementById("editHeroDesc").value = t.heroDesc;
+
+      document.getElementById("editCallUrl").value = state.contacts.callUrl;
+      document.getElementById("editBookUrl").value = state.contacts.bookUrl;
+      document.getElementById("editPaypalUrl").value = state.contacts.paypalUrl;
+      document.getElementById("editPaypalNote").value = state.contacts.paypalNote;
+      document.getElementById("editBankDetails").value = state.contacts.bankDetails;
+
+      document.getElementById("editPrimaryColor").value = state.theme.primary;
+      document.getElementById("editBgColor").value = state.theme.bgPage;
+      document.getElementById("editHeroBgImage").value = state.theme.heroBgImage || "";
+      document.getElementById("editNewPass").value = "";
+
+      renderAdminItems();
+    }
+
+    function renderAdminItems() {
+      const listEl = document.getElementById("adminItemsList");
+      listEl.innerHTML = "";
+
+      if (!state.items.length) {
+        listEl.innerHTML = `<p style="color: var(--text-muted);">لا توجد عناصر حالياً.</p>`;
+        return;
+      }
+
+      const typeNames = { services: "قسم / خدمة", books: "كتاب", media: "فيديو / ملف" };
+
+      state.items.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "admin-list-item";
+
+        const info = document.createElement("div");
+        info.innerHTML = `<strong>${item.title}</strong> <span style="color: var(--text-muted); font-size: 0.85rem;">(${typeNames[item.type] || item.type})</span>`;
+
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className = "btn btn-danger";
+        delBtn.textContent = "حذف";
+        delBtn.addEventListener("click", () => {
+          state.items = state.items.filter((x) => x.id !== item.id);
+          saveState();
+        });
+
+        row.appendChild(info);
+        row.appendChild(delBtn);
+        listEl.appendChild(row);
+      });
+    }
+
+    document.getElementById("langSwitcher").addEventListener("change", (e) => {
+      state.lang = e.target.value;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderSite();
+    });
+
+    const modal = document.getElementById("adminModal");
+    document.getElementById("openAdminBtn").addEventListener("click", () => {
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      if (isAuthenticated) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("dashboardBox").style.display = "block";
+        document.getElementById("modalTitle").textContent = "لوحة تحكم الإدارة";
+        populateAdminForms();
+      } else {
+        document.getElementById("loginBox").style.display = "block";
+        document.getElementById("dashboardBox").style.display = "none";
+        document.getElementById("modalTitle").textContent = "دخول الإدارة";
+        document.getElementById("adminPassInput").value = "";
+        document.getElementById("loginError").style.display = "none";
+      }
+    });
+
+    document.getElementById("closeModalBtn").addEventListener("click", () => {
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    });
+
+    document.getElementById("loginSubmitBtn").addEventListener("click", () => {
+      const pass = document.getElementById("adminPassInput").value;
+      if (pass === state.adminPass) {
+        isAuthenticated = true;
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("dashboardBox").style.display = "block";
+        document.getElementById("modalTitle").textContent = "لوحة تحكم الإدارة";
+        populateAdminForms();
+      } else {
+        document.getElementById("loginError").style.display = "block";
+      }
+    });
+
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".tab-pane").forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    document.getElementById("editLangTarget").addEventListener("change", () => {
+      const lang = document.getElementById("editLangTarget").value;
+      const t = state.texts[lang];
+      document.getElementById("editBadge").value = t.badge;
+      document.getElementById("editHeroTitle").value = t.heroTitle;
+      document.getElementById("editHeroDesc").value = t.heroDesc;
+    });
+
+    document.getElementById("saveLangBtn").addEventListener("click", () => {
+      const lang = document.getElementById("editLangTarget").value;
+      state.texts[lang].badge = document.getElementById("editBadge").value.trim();
+      state.texts[lang].heroTitle = document.getElementById("editHeroTitle").value.trim();
+      state.texts[lang].heroDesc = document.getElementById("editHeroDesc").value.trim();
+      saveState();
+    });
+
+    document.getElementById("addItemBtn").addEventListener("click", () => {
+      const type = document.getElementById("newItemType").value;
+      const title = document.getElementById("newItemTitle").value.trim();
+      const link = document.getElementById("newItemLink").value.trim();
+      const desc = document.getElementById("newItemDesc").value.trim();
+      if (!title) return;
+
+      state.items.push({ id: "item-" + Date.now(), type, title, link, desc });
+      document.getElementById("newItemTitle").value = "";
+      document.getElementById("newItemLink").value = "";
+      document.getElementById("newItemDesc").value = "";
+      saveState();
+    });
+
+    document.getElementById("savePaymentsBtn").addEventListener("click", () => {
+      state.contacts.callUrl = document.getElementById("editCallUrl").value.trim();
+      state.contacts.bookUrl = document.getElementById("editBookUrl").value.trim();
+      state.contacts.paypalUrl = document.getElementById("editPaypalUrl").value.trim();
+      state.contacts.paypalNote = document.getElementById("editPaypalNote").value.trim();
+      state.contacts.bankDetails = document.getElementById("editBankDetails").value.trim();
+      saveState();
+    });
+
+    document.getElementById("saveAppearanceBtn").addEventListener("click", () => {
+      state.theme.primary = document.getElementById("editPrimaryColor").value;
+      state.theme.bgPage = document.getElementById("editBgColor").value;
+      state.theme.heroBgImage = document.getElementById("editHeroBgImage").value.trim();
+      const newPass = document.getElementById("editNewPass").value.trim();
+      if (newPass) state.adminPass = newPass;
+      saveState();
+    });
+
+    document.getElementById("exportJsonBtn").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "hafida-fenix-backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("resetDefaultBtn").addEventListener("click", () => {
+      state = structuredClone(DEFAULT_STATE);
+      saveState();
+      populateAdminForms();
+    });
+
+    renderSite();
+  </script>
+<!-- HAFIDA_CLEAN_START -->
+<style id="hafidaCleanStyle">
+  body.hf-has-bg {
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+  }
+  #hfMediaSuite {
+    margin: 18px 0;
+    padding: 16px;
+    border: 2px solid #6d28d9;
+    border-radius: 14px;
+    background: #faf5ff;
+    color: #1e1b4b;
+  }
+  #hfMediaSuite h3, #hfMediaSuite h4 {
+    margin: 0 0 10px;
+    color: #4c1d95;
+  }
+  .hf-row {
+    margin-bottom: 12px;
+  }
+  .hf-row label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .hf-row input[type="text"],
+  .hf-row input[type="url"],
+  .hf-row textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #c4b5fd;
+    border-radius: 8px;
+    background: #fff;
+    box-sizing: border-box;
+    font-family: inherit;
+  }
+  .hf-btn {
+    background: #6d28d9;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 6px;
+  }
+  .hf-btn-sec {
+    background: #ede9fe;
+    color: #4c1d95;
+    border: 1px solid #c4b5fd;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  #hfSectionsOutput {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .hf-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ddd6fe;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .hf-card img {
+    width: 100%;
+    height: 165px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+</style>
+
+<script id="hafidaCleanScript">
+(function() {
+  const K_AVATAR = "hf_clean_avatar_v2";
+  const K_BG = "hf_clean_bg_v2";
+  const K_SECTIONS = "hf_clean_sections_v2";
+
+  function fileToDataURL(file, done) {
+    if (!file) return done("");
+    const reader = new FileReader();
+    reader.onload = (ev) => done(ev.target.result || "");
+    reader.readAsDataURL(file);
+  }
+
+  function applyVisuals() {
+    const avatar = localStorage.getItem(K_AVATAR);
+    if (avatar) {
+      const targets = document.querySelectorAll("img[alt*=avatar i], img[alt*=صورة i], .avatar, #avatar, #siteAvatar, header img");
+      targets.forEach((img) => { img.src = avatar; });
+    }
+
+    const bg = localStorage.getItem(K_BG);
+    if (bg) {
+      document.body.classList.add("hf-has-bg");
+      document.body.style.backgroundImage = `url("${bg}")`;
+    } else {
+      document.body.classList.remove("hf-has-bg");
+      document.body.style.backgroundImage = "";
+    }
+  }
+
+  function getSections() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(K_SECTIONS) || "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function renderSections() {
+    let container = document.getElementById("hfSectionsOutput");
+    if (!container) {
+      container = document.createElement("section");
+      container.id = "hfSectionsOutput";
+      const mainEl = document.querySelector("main") || document.body;
+      mainEl.prepend(container);
+    }
+    const items = getSections();
+    container.innerHTML = items.map((sec, idx) => `
+      <article class="hf-card">
+        ${sec.img ? `<img src="${sec.img}" alt="${sec.title || ""}">` : ""}
+        ${sec.title ? `<h4>${sec.title}</h4>` : ""}
+        ${sec.text ? `<p style="margin:6px 0 10px;line-height:1.6;">${sec.text}</p>` : ""}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          ${sec.url ? `<a href="${sec.url}" target="_blank" rel="noopener noreferrer" class="hf-btn" style="text-decoration:none;">${sec.btnText || "فتح الرابط"}</a>` : ""}
+          <button type="button" class="hf-btn-sec" onclick="hfDeleteCleanSection(${idx})">حذف</button>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  window.hfDeleteCleanSection = function(idx) {
+    const items = getSections();
+    items.splice(idx, 1);
+    localStorage.setItem(K_SECTIONS, JSON.stringify(items));
+    renderSections();
+  };
+
+  function mountSuite() {
+    if (document.getElementById("hfMediaSuite")) return;
+    const host = document.querySelector("#adminPanel, #adminBox, .admin-panel, [data-admin]") || document.body;
+    const box = document.createElement("div");
+    box.id = "hfMediaSuite";
+    box.innerHTML = `
+      <h3>تحديث المحتوى والصور والخلفية (ملف مباشر من الجهاز)</h3>
+
+      <div class="hf-row">
+        <label>تغيير الصورة الشخصية (اختر ملف صورة)</label>
+        <input type="file" id="hfAvatarInput" accept="image/*">
+        <button type="button" class="hf-btn-sec" id="hfResetAvatarBtn" style="margin-top:6px;">إعادة الصورة الافتراضية</button>
+      </div>
+
+      <div class="hf-row">
+        <label>تغيير صورة الخلفية (اختر ملف صورة)</label>
+        <input type="file" id="hfBgInput" accept="image/*">
+        <button type="button" class="hf-btn-sec" id="hfClearBgBtn" style="margin-top:6px;">إزالة الخلفية</button>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #ddd6fe;margin:14px 0;">
+
+      <h4>إضافة قسم جديد (صورة ملف + نص + رابط)</h4>
+      <div class="hf-row">
+        <label>العنوان</label>
+        <input type="text" id="hfSecTitle" placeholder="عنوان القسم">
+      </div>
+      <div class="hf-row">
+        <label>النص</label>
+        <textarea id="hfSecText" rows="3" placeholder="اكتب النص هنا"></textarea>
+      </div>
+      <div class="hf-row">
+        <label>الرابط</label>
+        <input type="url" id="hfSecUrl" placeholder="https://example.com">
+      </div>
+      <div class="hf-row">
+        <label>نص زر الرابط</label>
+        <input type="text" id="hfSecBtnLabel" value="زيارة الرابط">
+      </div>
+      <div class="hf-row">
+        <label>صورة القسم (اختر ملف صورة)</label>
+        <input type="file" id="hfSecImgInput" accept="image/*">
+      </div>
+      <button type="button" class="hf-btn" id="hfAddSecBtn">حفظ وإضافة القسم</button>
+    `;
+    host.prepend(box);
+
+    document.getElementById("hfAvatarInput").addEventListener("change", (e) => {
+      fileToDataURL(e.target.files[0], (url) => {
+        if (!url) return;
+        localStorage.setItem(K_AVATAR, url);
+        applyVisuals();
+      });
+    });
+
+    document.getElementById("hfResetAvatarBtn").addEventListener("click", () => {
+      localStorage.removeItem(K_AVATAR);
+      applyVisuals();
+    });
+
+    document.getElementById("hfBgInput").addEventListener("change", (e) => {
+      fileToDataURL(e.target.files[0], (url) => {
+        if (!url) return;
+        localStorage.setItem(K_BG, url);
+        applyVisuals();
+      });
+    });
+
+    document.getElementById("hfClearBgBtn").addEventListener("click", () => {
+      localStorage.removeItem(K_BG);
+      applyVisuals();
+    });
+
+    document.getElementById("hfAddSecBtn").addEventListener("click", () => {
+      const title = document.getElementById("hfSecTitle").value.trim();
+      const text = document.getElementById("hfSecText").value.trim();
+      const url = document.getElementById("hfSecUrl").value.trim();
+      const btnText = document.getElementById("hfSecBtnLabel").value.trim();
+      const file = document.getElementById("hfSecImgInput").files[0];
+
+      fileToDataURL(file, (imgData) => {
+        const items = getSections();
+        items.push({ title, text, url, btnText, img: imgData });
+        localStorage.setItem(K_SECTIONS, JSON.stringify(items));
+        renderSections();
+        document.getElementById("hfSecTitle").value = "";
+        document.getElementById("hfSecText").value = "";
+        document.getElementById("hfSecUrl").value = "";
+        document.getElementById("hfSecImgInput").value = "";
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => { mountSuite(); applyVisuals(); renderSections(); });
+  } else {
+    mountSuite();
+    applyVisuals();
+    renderSections();
+  }
+})();
+</script>
+<!-- HAFIDA_CLEAN_END -->
+</body>
+</html>

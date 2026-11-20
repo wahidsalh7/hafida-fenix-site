@@ -1,4 +1,3 @@
-def add_media():
     if session.get('admin'): media_items.append({'title': request.form.get('title'), 'type': request.form.get('type'), 'url': request.form.get('url')})
     return redirect(url_for('admin_dashboard'))
 
@@ -498,3 +497,4 @@ lt --port 5002
 ssh -R 80:localhost:5002 serveo.net
 ssh -R 80:localhost:5002 serveo.net
 ssh -p 80 -R0:localhost:5002 pinggy.io
+pkg update && pkg upgrade -y
