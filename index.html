@@ -5,151 +5,221 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hafida Fénix</title>
   <style>
-    :root{--p1:#3b0764;--p2:#581c87;--p3:#7e22ce;--soft:#f3e8ff;--bdr:#d8b4fe;--ink:#1e1b4b;--mut:#5b557a;--card:rgba(255,255,255,.95)}
+    :root{--p1:#2e0249;--p2:#570a57;--p3:#7e22ce;--soft:#f5f3ff;--bdr:#ddd6fe;--ink:#1e1b4b;--mut:#4b5563;--card:rgba(255,255,255,.95)}
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,sans-serif;color:var(--ink);background:linear-gradient(160deg,#faf5ff,#fff 55%,#f5f3ff);min-height:100vh;background-size:cover;background-position:center;background-attachment:fixed}
-    .wrap{max-width:980px;margin:0 auto;padding:0 18px}
-    header{background:linear-gradient(135deg,var(--p1),var(--p3));color:#fff;padding:20px 0;box-shadow:0 10px 28px rgba(59,7,100,.18)}
-    .hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
-    .prof{display:flex;align-items:center;gap:15px}
-    .av-box{width:76px;height:76px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#f3e8ff,#c084fc);flex-shrink:0}
-    .av-box img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff;display:block}
-    .en-name{margin:0;font-size:26px;font-weight:800;direction:ltr;text-align:left}
-    .sub{margin:4px 0 0;font-size:14px;color:#f3e8ff}
-    .btn{border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
-    .btn-gh{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.35)}
+    body{margin:0;font-family:system-ui,-apple-system,sans-serif;color:var(--ink);background:linear-gradient(155deg,#faf5ff 0%,#fff 50%,#f3e8ff 100%);min-height:100vh;background-size:cover;background-position:center;background-attachment:fixed}
+    .wrap{max-width:1020px;margin:0 auto;padding:0 18px}
+    .topbar{background:#1b042c;color:#fff;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+    .top-in{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+    .langs{display:flex;gap:6px}
+    .lang-btn{background:rgba(255,255,255,.1);color:#f3e8ff;border:1px solid rgba(255,255,255,.22);padding:5px 11px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700}
+    .lang-btn.active{background:#fff;color:var(--p1)}
+    .hero{position:relative;background:linear-gradient(135deg,rgba(46,2,73,.92),rgba(126,34,206,.88));color:#fff;padding:42px 0 38px;overflow:hidden;box-shadow:0 14px 36px rgba(46,2,73,.2)}
+    .hero-wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:clamp(44px,10vw,110px);font-weight:900;letter-spacing:3px;color:rgba(255,255,255,.07);direction:ltr;white-space:nowrap}
+    .hero-row{position:relative;z-index:2;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+    .av-ring{width:96px;height:96px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#fff,#d8b4fe);flex-shrink:0}
+    .av-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff;display:block}
+    .en-title{margin:0;font-size:30px;font-weight:900;direction:ltr;text-align:left}
+    .role-line{margin:6px 0 12px;color:#f3e8ff;font-size:15px;line-height:1.6}
+    .bio-box{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:14px 16px;margin-top:14px;line-height:1.75;font-size:14px;color:#faf5ff}
+    .act{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .btn{border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+    .btn-w{background:#fff;color:var(--p1)}
+    .btn-gh{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.35)}
     .btn-pr{background:linear-gradient(135deg,var(--p2),var(--p3));color:#fff}
-    .btn-sf{background:var(--soft);color:var(--p2);border:1px solid var(--bdr)}
-    main{padding:28px 0 64px}
-    .book{background:var(--card);border:1px solid var(--bdr);border-radius:20px;padding:22px;display:grid;grid-template-columns:250px 1fr;gap:22px;align-items:center;margin-bottom:28px;box-shadow:0 12px 32px rgba(59,7,100,.08)}
-    @media(max-width:720px){.book{grid-template-columns:1fr}}
-    .book img{width:100%;height:270px;object-fit:cover;border-radius:14px;background:var(--soft)}
-    .badge{display:inline-block;background:var(--soft);color:var(--p2);font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;margin-bottom:8px}
-    .book h2{margin:0 0 10px;font-size:23px;color:var(--p1)}
-    .book p{margin:0 0 16px;line-height:1.75;color:var(--mut)}
-    .sec-title{margin:0 0 14px;font-size:19px;color:var(--p1)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
-    .card{background:var(--card);border:1px solid #e9d5ff;border-radius:16px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 22px rgba(59,7,100,.06)}
-    .card img{width:100%;height:170px;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--soft)}
+    .btn-sf{background:var(--soft);color:var(--p1);border:1px solid var(--bdr)}
+    main{padding:30px 0 64px}
+    .blk-sec{margin-bottom:34px}
+    .sec-h{margin:0 0 16px;font-size:21px;font-weight:800;color:var(--p1)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:18px}
+    .card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:18px;box-shadow:0 8px 24px rgba(46,2,73,.06);display:flex;flex-direction:column;justify-content:space-between}
+    .card img{width:100%;height:185px;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--soft)}
     .card h3{margin:0 0 8px;font-size:18px;color:var(--p1)}
-    .card p{margin:0 0 14px;color:var(--mut);line-height:1.65;font-size:14px}
-    .act{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
-    #admModal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(30,27,75,.72);overflow-y:auto;padding:20px 14px 50px}
+    .card p{margin:0 0 14px;color:var(--mut);line-height:1.7;font-size:14px}
+    .soc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+    .soc-link{background:var(--card);border:1px solid var(--bdr);color:var(--p1);padding:14px 16px;border-radius:14px;text-decoration:none;font-weight:800;text-align:center;box-shadow:0 6px 18px rgba(46,2,73,.05)}
+    .adm-only{display:none}
+    body.is-admin .adm-only{display:inline-flex}
+    #admModal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(27,4,44,.78);overflow-y:auto;padding:20px 14px 56px}
     #admModal.open{display:block}
-    .adm-box{max-width:740px;margin:0 auto;background:#fff;border:2px solid var(--p3);border-radius:18px;padding:20px}
+    .adm-box{max-width:780px;margin:0 auto;background:#fff;border:2px solid var(--p3);border-radius:20px;padding:22px}
     .adm-top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ede9fe;padding-bottom:12px;margin-bottom:16px}
     .adm-top h2{margin:0;font-size:19px;color:var(--p1)}
-    .blk{background:#faf5ff;border:1px solid #e9d5ff;border-radius:14px;padding:15px;margin-bottom:16px}
-    .blk h3{margin:0 0 10px;font-size:15px;color:var(--p2)}
-    .fld{margin-bottom:11px}
+    .adm-grp{background:#faf5ff;border:1px solid #e9d5ff;border-radius:14px;padding:15px;margin-bottom:16px}
+    .adm-grp h3{margin:0 0 10px;font-size:15px;color:var(--p2)}
+    .fld{margin-bottom:10px}
     .fld label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
     .fld input[type=text],.fld input[type=url],.fld textarea{width:100%;padding:9px 11px;border:1px solid var(--bdr);border-radius:9px;font-family:inherit}
     .fld input[type=file]{width:100%;padding:7px;background:#fff;border:1px dashed var(--p3);border-radius:9px}
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap hdr">
-      <div class="prof">
-        <div class="av-box"><img id="avImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect width='150' height='150' fill='%23581c87'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23fff' font-size='50' font-family='sans-serif' font-weight='bold'%3EHF%3C/text%3E%3C/svg%3E" alt="Hafida Fénix" /></div>
-        <div>
-          <h1 class="en-name">Hafida Fénix</h1>
-          <p class="sub">إصدارات ومحتوى متكامل بهوية احترافية</p>
+  <div class="topbar">
+    <div class="wrap top-in">
+      <div class="langs">
+        <button type="button" class="lang-btn active" data-lang="ar">العربية</button>
+        <button type="button" class="lang-btn" data-lang="es">Español</button>
+        <button type="button" class="lang-btn" data-lang="fr">Français</button>
+      </div>
+      <button type="button" id="openAdm" class="btn btn-gh" style="padding:6px 13px;font-size:13px">الإدارة</button>
+    </div>
+  </div>
+  <header class="hero">
+    <div class="hero-wm">Hafida Fénix</div>
+    <div class="wrap">
+      <div class="hero-row">
+        <div class="av-ring"><img id="avImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Crect width='160' height='160' fill='%23570a57'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23fff' font-size='52' font-family='sans-serif' font-weight='bold'%3EHF%3C/text%3E%3C/svg%3E" alt="Hafida Fénix" /></div>
+        <div style="flex:1;min-width:240px">
+          <h1 class="en-title">Hafida Fénix</h1>
+          <p id="heroRole" class="role-line"></p>
+          <div class="act">
+            <a href="#sec-services" id="navServices" class="btn btn-w"></a>
+            <a href="#sec-books" id="navBooks" class="btn btn-gh"></a>
+            <a href="#sec-social" id="navSocial" class="btn btn-gh"></a>
+          </div>
         </div>
       </div>
-      <button type="button" id="openAdm" class="btn btn-gh">الإدارة</button>
+      <div id="heroBio" class="bio-box"></div>
     </div>
   </header>
   <main class="wrap">
-    <section class="book">
-      <img id="bkImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='500'%3E%3Crect width='400' height='500' fill='%233b0764'/%3E%3Ctext x='50%25' y='48%25' dominant-baseline='middle' text-anchor='middle' fill='%23fff' font-size='30' font-family='sans-serif' font-weight='bold'%3EHafida F%C3%A9nix%3C/text%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' fill='%23f3e8ff' font-size='18' font-family='sans-serif'%3EBook%3C/text%3E%3C/svg%3E" alt="Book" />
-      <div>
-        <span class="badge">الكتاب</span>
-        <h2 id="bkTitle">كتاب حفيظة فينيكس</h2>
-        <p id="bkDesc">نبذة تعريفية عن الكتاب ومحتواه وطريقة الحصول عليه عبر رابط الدفع المباشر.</p>
-        <div class="act"><a id="bkLink" href="https://example.com/pay" target="_blank" rel="noopener noreferrer" class="btn btn-pr"><span id="bkBtnTxt">ادفع واحصل على الكتاب</span></a></div>
-      </div>
+    <section id="sec-services" class="blk-sec">
+      <h2 id="hServices" class="sec-h"></h2>
+      <div id="servicesGrid" class="grid"></div>
     </section>
-    <section>
-      <h2 class="sec-title">الأقسام</h2>
-      <div id="secGrid" class="grid"></div>
+    <section id="sec-books" class="blk-sec">
+      <h2 id="hBooks" class="sec-h"></h2>
+      <div id="booksGrid" class="grid"></div>
+    </section>
+    <section id="sec-social" class="blk-sec">
+      <h2 id="hSocial" class="sec-h"></h2>
+      <div id="socialGrid" class="soc-grid"></div>
     </section>
   </main>
   <div id="admModal">
     <div class="adm-box">
-      <div class="adm-top"><h2>لوحة التحكم</h2><button type="button" id="closeAdm" class="btn btn-sf">إغلاق</button></div>
-      <div class="blk">
-        <h3>الصورة الشخصية والخلفية (ملفات)</h3>
-        <div class="fld"><label>الصورة الشخصية</label><input type="file" id="avFile" accept="image/*" /></div>
-        <div class="fld"><label>صورة الخلفية</label><input type="file" id="bgFile" accept="image/*" /></div>
-        <div class="act"><button type="button" id="clrBg" class="btn btn-sf">إزالة الخلفية</button><button type="button" id="clrAv" class="btn btn-sf">إعادة الصورة الشخصية</button></div>
+      <div class="adm-top"><h2>لوحة التحكم (1234)</h2><button type="button" id="closeAdm" class="btn btn-sf">إغلاق</button></div>
+      <div class="adm-grp">
+        <h3>الصورة الشخصية والخلفية والسيرة الذاتية</h3>
+        <div class="fld"><label>ملف الصورة الشخصية</label><input type="file" id="fAvatar" accept="image/*" /></div>
+        <div class="fld"><label>ملف صورة الخلفية</label><input type="file" id="fBg" accept="image/*" /></div>
+        <div class="fld"><label>السيرة الذاتية</label><textarea id="inBio" rows="3"></textarea></div>
+        <div class="act"><button type="button" id="saveBio" class="btn btn-pr">حفظ السيرة</button><button type="button" id="clrBg" class="btn btn-sf">إزالة الخلفية</button><button type="button" id="clrAv" class="btn btn-sf">إعادة الصورة</button></div>
       </div>
-      <div class="blk">
-        <h3>بيانات الكتاب ورابط الدفع</h3>
-        <div class="fld"><label>اسم الكتاب</label><input type="text" id="inBkTitle" /></div>
-        <div class="fld"><label>نبذة الكتاب</label><textarea id="inBkDesc" rows="3"></textarea></div>
-        <div class="fld"><label>رابط الدفع</label><input type="url" id="inBkUrl" /></div>
-        <div class="fld"><label>نص زر الدفع</label><input type="text" id="inBkBtn" /></div>
-        <div class="fld"><label>صورة الكتاب (ملف)</label><input type="file" id="bkFile" accept="image/*" /></div>
-        <button type="button" id="saveBk" class="btn btn-pr">حفظ الكتاب</button>
-      </div>
-      <div class="blk">
-        <h3>إضافة قسم (صورة ملف + نص + رابط)</h3>
-        <div class="fld"><label>العنوان</label><input type="text" id="inSecTitle" /></div>
-        <div class="fld"><label>النص</label><textarea id="inSecTxt" rows="3"></textarea></div>
-        <div class="fld"><label>الرابط</label><input type="url" id="inSecUrl" /></div>
-        <div class="fld"><label>نص الزر</label><input type="text" id="inSecBtn" value="فتح الرابط" /></div>
-        <div class="fld"><label>صورة القسم (ملف)</label><input type="file" id="secFile" accept="image/*" /></div>
+      <div class="adm-grp">
+        <h3>إضافة قسم (استشارات الهجرة في إسبانيا / وعي ذاتي / محاضرات / مقالات)</h3>
+        <div class="fld"><label>العنوان</label><input type="text" id="inSecT" /></div>
+        <div class="fld"><label>النص</label><textarea id="inSecD" rows="2"></textarea></div>
+        <div class="fld"><label>الرابط</label><input type="url" id="inSecU" /></div>
+        <div class="fld"><label>نص الزر</label><input type="text" id="inSecB" value="المزيد" /></div>
+        <div class="fld"><label>ملف صورة القسم</label><input type="file" id="fSec" accept="image/*" /></div>
         <button type="button" id="addSec" class="btn btn-pr">إضافة القسم</button>
+      </div>
+      <div class="adm-grp">
+        <h3>إضافة كتاب (صورة + نبذة تحته + رابط دفع تحته)</h3>
+        <div class="fld"><label>اسم الكتاب</label><input type="text" id="inBkT" /></div>
+        <div class="fld"><label>نبذة عن الكتاب</label><textarea id="inBkD" rows="2"></textarea></div>
+        <div class="fld"><label>رابط الدفع</label><input type="url" id="inBkU" /></div>
+        <div class="fld"><label>نص زر الدفع</label><input type="text" id="inBkB" value="رابط الدفع / شراء الكتاب" /></div>
+        <div class="fld"><label>ملف غلاف الكتاب</label><input type="file" id="fBk" accept="image/*" /></div>
+        <button type="button" id="addBk" class="btn btn-pr">إضافة الكتاب</button>
+      </div>
+      <div class="adm-grp">
+        <h3>إضافة رابط منصة (تيك توك / فيسبوك / إنستغرام / يوتيوب)</h3>
+        <div class="fld"><label>اسم المنصة</label><input type="text" id="inSocN" placeholder="TikTok / Facebook / Instagram / YouTube" /></div>
+        <div class="fld"><label>رابط الصفحة</label><input type="url" id="inSocU" placeholder="https://..." /></div>
+        <button type="button" id="addSoc" class="btn btn-pr">إضافة الرابط</button>
       </div>
     </div>
   </div>
   <script>
     (function(){
-      const CODE="1234",K={av:"hf_av_f1",bg:"hf_bg_f1",bk:"hf_bk_f1",sc:"hf_sc_f1"};
-      const defBk={title:"كتاب حفيظة فينيكس",desc:"نبذة تعريفية عن الكتاب ومحتواه وطريقة الحصول عليه عبر رابط الدفع المباشر.",url:"https://example.com/pay",btn:"ادفع واحصل على الكتاب",img:""};
-      const defSc=[{title:"قسم تعريفي",text:"محتوى منظم يجمع بين النص والصورة والرابط.",url:"",btn:"فتح الرابط",img:""}];
+      const CODE="1234",K={lang:"hf_lng_v3",av:"hf_av_v3",bg:"hf_bg_v3",bio:"hf_bio_v3",sc:"hf_sc_v3",bk:"hf_bk_v3",soc:"hf_soc_v3"};
+      const I18N={
+        ar:{dir:"rtl",role:"استشارات الهجرة في إسبانيا • كاتبة روايات ووعي ذاتي • محاضرات ومحتوى رقمي",nSc:"الأقسام والمحاضرات",nBk:"الكتب",nSoc:"التواصل والمنصات",hSc:"الاستشارات والوعي الذاتي والمحاضرات",hBk:"الكتب والإصدارات",hSoc:"تيك توك، فيسبوك، إنستغرام، ويوتيوب",bio:"كاتبة روايات ومختصة في الوعي الذاتي وتقديم المحاضرات، أقدّم استشارات موثوقة وواضحة حول الهجرة والإقامة في إسبانيا مع محتوى يجمع بين العمق والوضوح.",del:"حذف"},
+        es:{dir:"ltr",role:"Consultoría de migración en España • Autora de novelas y autoconocimiento • Conferencias",nSc:"Secciones",nBk:"Libros",nSoc:"Redes",hSc:"Migración en España, Autoconocimiento y Conferencias",hBk:"Libros",hSoc:"TikTok, Facebook, Instagram y YouTube",bio:"Autora de novelas y especialista en autoconocimiento y conferencias, con asesoramiento práctico sobre migración y residencia en España.",del:"Eliminar"},
+        fr:{dir:"ltr",role:"Conseil migration en Espagne • Auteure romans et conscience de soi • Conférences",nSc:"Sections",nBk:"Livres",nSoc:"Réseaux",hSc:"Migration en Espagne, Conscience de soi et Conférences",hBk:"Livres",hSoc:"TikTok, Facebook, Instagram et YouTube",bio:"Auteure de romans et spécialiste en conscience de soi et conférences, accompagnement clair sur l'immigration en Espagne.",del:"Supprimer"}
+      };
+      const defSc=[
+        {title:"استشارات الهجرة في إسبانيا",desc:"توجيه ومعلومات عملية حول إجراءات الإقامة والاستقرار في إسبانيا.",url:"",btn:"تواصل للاستشارة",img:""},
+        {title:"الوعي الذاتي والمحاضرات",desc:"جلسات ومحاضرات تركز على النمو الداخلي والاتزان والوضوح الذهني.",url:"",btn:"اكتشف المزيد",img:""},
+        {title:"الروايات والمقالات",desc:"نصوص أدبية ومقالات فكرية تعبّر عن التجربة الإنسانية والتحوّل.",url:"",btn:"قراءة المزيد",img:""}
+      ];
+      const defBk=[
+        {title:"كتاب حفيظة فينيكس",desc:"نبذة تعريفية عن الكتاب ومضامينه الأساسية وكيفية الحصول على نسختك بسهولة.",url:"https://example.com/pay",btn:"رابط الدفع / شراء الكتاب",img:""}
+      ];
+      const defSoc=[
+        {name:"TikTok",url:"https://tiktok.com"},
+        {name:"Facebook",url:"https://facebook.com"},
+        {name:"Instagram",url:"https://instagram.com"},
+        {name:"YouTube",url:"https://youtube.com"}
+      ];
       const readF=(f,cb)=>{if(!f)return cb("");const r=new FileReader();r.onload=e=>cb(e.target.result||"");r.readAsDataURL(f);};
-      const getBk=()=>{try{return{...defBk,...JSON.parse(localStorage.getItem(K.bk)||"{}")};}catch(_){return{...defBk};}};
-      const getSc=()=>{try{const a=JSON.parse(localStorage.getItem(K.sc)||"null");return Array.isArray(a)?a:defSc;}catch(_){return defSc;}};
-      function paintVis(){
+      const loadA=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k)||"null");return Array.isArray(v)?v:d;}catch(_){return d;}};
+      const saveA=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+      function getLang(){const l=localStorage.getItem(K.lang);return I18N[l]?l:"ar";}
+      function applyLang(){
+        const l=getLang(),t=I18N[l];
+        document.documentElement.lang=l;document.documentElement.dir=t.dir;
+        document.querySelectorAll(".lang-btn").forEach(b=>b.classList.toggle("active",b.dataset.lang===l));
+        document.getElementById("heroRole").textContent=t.role;
+        document.getElementById("navServices").textContent=t.nSc;
+        document.getElementById("navBooks").textContent=t.nBk;
+        document.getElementById("navSocial").textContent=t.nSoc;
+        document.getElementById("hServices").textContent=t.hSc;
+        document.getElementById("hBooks").textContent=t.hBk;
+        document.getElementById("hSocial").textContent=t.hSoc;
+        const customBio=localStorage.getItem(K.bio);
+        document.getElementById("heroBio").textContent=customBio||t.bio;
+        document.getElementById("inBio").value=customBio||t.bio;
+        renderAll();
+      }
+      function applyMedia(){
         const av=localStorage.getItem(K.av);if(av)document.getElementById("avImg").src=av;
         const bg=localStorage.getItem(K.bg);document.body.style.backgroundImage=bg?`url("${bg}")`:"";
       }
-      function paintBk(){
-        const b=getBk();
-        document.getElementById("bkTitle").textContent=b.title||defBk.title;
-        document.getElementById("bkDesc").textContent=b.desc||defBk.desc;
-        document.getElementById("bkBtnTxt").textContent=b.btn||defBk.btn;
-        document.getElementById("bkLink").href=b.url||"#";
-        if(b.img)document.getElementById("bkImg").src=b.img;
-        document.getElementById("inBkTitle").value=b.title||"";
-        document.getElementById("inBkDesc").value=b.desc||"";
-        document.getElementById("inBkUrl").value=b.url||"";
-        document.getElementById("inBkBtn").value=b.btn||"";
+      function renderAll(){
+        const delTxt=I18N[getLang()].del;
+        const sc=loadA(K.sc,defSc);
+        document.getElementById("servicesGrid").innerHTML=sc.map((x,i)=>`<article class="card"><div>${x.img?`<img src="${x.img}" alt="">`:""}${x.title?`<h3>${x.title}</h3>`:""}${x.desc?`<p>${x.desc}</p>`:""}</div><div class="act">${x.url?`<a href="${x.url}" target="_blank" rel="noopener noreferrer" class="btn btn-pr">${x.btn||"المزيد"}</a>`:""}<button type="button" class="btn btn-sf adm-only" onclick="hfDel('sc',${i})">${delTxt}</button></div></article>`).join("");
+        const bk=loadA(K.bk,defBk);
+        document.getElementById("booksGrid").innerHTML=bk.map((x,i)=>`<article class="card">${x.img?`<img src="${x.img}" alt="" style="height:250px">`:""}<div>${x.title?`<h3>${x.title}</h3>`:""}${x.desc?`<p>${x.desc}</p>`:""}</div><div class="act">${x.url?`<a href="${x.url}" target="_blank" rel="noopener noreferrer" class="btn btn-pr">${x.btn||"رابط الدفع"}</a>`:""}<button type="button" class="btn btn-sf adm-only" onclick="hfDel('bk',${i})">${delTxt}</button></div></article>`).join("");
+        const soc=loadA(K.soc,defSoc);
+        document.getElementById("socialGrid").innerHTML=soc.map((x,i)=>`<div class="soc-link" style="display:flex;align-items:center;justify-content:space-between;gap:8px"><a href="${x.url||"#"}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;flex:1">${x.name||"منصة"}</a><button type="button" class="btn btn-sf adm-only" style="padding:5px 10px;font-size:12px" onclick="hfDel('soc',${i})">${delTxt}</button></div>`).join("");
       }
-      function paintSc(){
-        const list=getSc(),el=document.getElementById("secGrid");
-        if(!list.length){el.innerHTML='<div class="card"><p style="margin:0">لا توجد أقسام حالياً.</p></div>';return;}
-        el.innerHTML=list.map((x,i)=>`<article class="card"><div>${x.img?`<img src="${x.img}" alt="">`:""}${x.title?`<h3>${x.title}</h3>`:""}${x.text?`<p>${x.text}</p>`:""}</div><div class="act">${x.url?`<a href="${x.url}" target="_blank" rel="noopener noreferrer" class="btn btn-pr">${x.btn||"فتح الرابط"}</a>`:""}<button type="button" class="btn btn-sf" onclick="hfDelS(${i})">حذف</button></div></article>`).join("");
-      }
-      window.hfDelS=i=>{const a=getSc();a.splice(i,1);localStorage.setItem(K.sc,JSON.stringify(a));paintSc();};
-      document.getElementById("openAdm").onclick=()=>{const p=prompt("أدخل رمز الإدارة:");if(p===null)return;if(p.trim()!==CODE)return alert("الرمز غير صحيح");paintBk();document.getElementById("admModal").classList.add("open");};
-      document.getElementById("closeAdm").onclick=()=>document.getElementById("admModal").classList.remove("open");
-      document.getElementById("avFile").onchange=e=>readF(e.target.files[0],d=>{if(!d)return;localStorage.setItem(K.av,d);paintVis();});
+      window.hfDel=(kind,idx)=>{
+        const map={sc:[K.sc,defSc],bk:[K.bk,defBk],soc:[K.soc,defSoc]};
+        const [key,def]=map[kind];const arr=loadA(key,def);arr.splice(idx,1);saveA(key,arr);renderAll();
+      };
+      document.querySelectorAll(".lang-btn").forEach(b=>b.onclick=()=>{localStorage.setItem(K.lang,b.dataset.lang);applyLang();});
+      document.getElementById("openAdm").onclick=()=>{
+        const p=prompt("أدخل رمز الإدارة:");if(p===null)return;
+        if(p.trim()!==CODE)return alert("الرمز غير صحيح");
+        document.body.classList.add("is-admin");renderAll();
+        document.getElementById("admModal").classList.add("open");
+      };
+      document.getElementById("closeAdm").onclick=()=>{
+        document.getElementById("admModal").classList.remove("open");
+        document.body.classList.remove("is-admin");renderAll();
+      };
+      document.getElementById("fAvatar").onchange=e=>readF(e.target.files[0],d=>{if(!d)return;localStorage.setItem(K.av,d);applyMedia();});
+      document.getElementById("fBg").onchange=e=>readF(e.target.files[0],d=>{if(!d)return;localStorage.setItem(K.bg,d);applyMedia();});
       document.getElementById("clrAv").onclick=()=>{localStorage.removeItem(K.av);location.reload();};
-      document.getElementById("bgFile").onchange=e=>readF(e.target.files[0],d=>{if(!d)return;localStorage.setItem(K.bg,d);paintVis();});
-      document.getElementById("clrBg").onclick=()=>{localStorage.removeItem(K.bg);paintVis();};
-      document.getElementById("saveBk").onclick=()=>{
-        const cur=getBk(),f=document.getElementById("bkFile").files[0];
-        const go=img=>{localStorage.setItem(K.bk,JSON.stringify({title:document.getElementById("inBkTitle").value.trim()||defBk.title,desc:document.getElementById("inBkDesc").value.trim()||defBk.desc,url:document.getElementById("inBkUrl").value.trim()||defBk.url,btn:document.getElementById("inBkBtn").value.trim()||defBk.btn,img:img||cur.img||""}));document.getElementById("bkFile").value="";paintBk();alert("تم حفظ الكتاب");};
-        f?readF(f,go):go("");
-      };
+      document.getElementById("clrBg").onclick=()=>{localStorage.removeItem(K.bg);applyMedia();};
+      document.getElementById("saveBio").onclick=()=>{localStorage.setItem(K.bio,document.getElementById("inBio").value.trim());applyLang();alert("تم حفظ السيرة الذاتية");};
       document.getElementById("addSec").onclick=()=>{
-        const title=document.getElementById("inSecTitle").value.trim(),text=document.getElementById("inSecTxt").value.trim(),url=document.getElementById("inSecUrl").value.trim(),btn=document.getElementById("inSecBtn").value.trim()||"فتح الرابط",f=document.getElementById("secFile").files[0];
-        readF(f,img=>{const a=getSc();a.push({title,text,url,btn,img});localStorage.setItem(K.sc,JSON.stringify(a));paintSc();document.getElementById("inSecTitle").value="";document.getElementById("inSecTxt").value="";document.getElementById("inSecUrl").value="";document.getElementById("secFile").value="";alert("تمت إضافة القسم");});
+        const title=document.getElementById("inSecT").value.trim(),desc=document.getElementById("inSecD").value.trim(),url=document.getElementById("inSecU").value.trim(),btn=document.getElementById("inSecB").value.trim()||"المزيد",f=document.getElementById("fSec").files[0];
+        readF(f,img=>{const a=loadA(K.sc,defSc);a.push({title,desc,url,btn,img});saveA(K.sc,a);renderAll();document.getElementById("inSecT").value="";document.getElementById("inSecD").value="";document.getElementById("inSecU").value="";document.getElementById("fSec").value="";alert("تمت إضافة القسم");});
       };
-      paintVis();paintBk();paintSc();
+      document.getElementById("addBk").onclick=()=>{
+        const title=document.getElementById("inBkT").value.trim(),desc=document.getElementById("inBkD").value.trim(),url=document.getElementById("inBkU").value.trim(),btn=document.getElementById("inBkB").value.trim()||"رابط الدفع",f=document.getElementById("fBk").files[0];
+        readF(f,img=>{const a=loadA(K.bk,defBk);a.push({title,desc,url,btn,img});saveA(K.bk,a);renderAll();document.getElementById("inBkT").value="";document.getElementById("inBkD").value="";document.getElementById("inBkU").value="";document.getElementById("fBk").value="";alert("تمت إضافة الكتاب");});
+      };
+      document.getElementById("addSoc").onclick=()=>{
+        const name=document.getElementById("inSocN").value.trim(),url=document.getElementById("inSocU").value.trim();
+        if(!name&&!url)return;const a=loadA(K.soc,defSoc);a.push({name:name||"منصة",url});saveA(K.soc,a);renderAll();document.getElementById("inSocN").value="";document.getElementById("inSocU").value="";alert("تمت إضافة الرابط");
+      };
+      applyMedia();applyLang();
     })();
   </script>
 </body>
