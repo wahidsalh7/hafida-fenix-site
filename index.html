@@ -933,5 +933,252 @@
 
     renderSite();
   </script>
+<!-- HAFIDA_CLEAN_START -->
+<style id="hafidaCleanStyle">
+  body.hf-has-bg {
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+  }
+  #hfMediaSuite {
+    margin: 18px 0;
+    padding: 16px;
+    border: 2px solid #6d28d9;
+    border-radius: 14px;
+    background: #faf5ff;
+    color: #1e1b4b;
+  }
+  #hfMediaSuite h3, #hfMediaSuite h4 {
+    margin: 0 0 10px;
+    color: #4c1d95;
+  }
+  .hf-row {
+    margin-bottom: 12px;
+  }
+  .hf-row label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .hf-row input[type="text"],
+  .hf-row input[type="url"],
+  .hf-row textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #c4b5fd;
+    border-radius: 8px;
+    background: #fff;
+    box-sizing: border-box;
+    font-family: inherit;
+  }
+  .hf-btn {
+    background: #6d28d9;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 6px;
+  }
+  .hf-btn-sec {
+    background: #ede9fe;
+    color: #4c1d95;
+    border: 1px solid #c4b5fd;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  #hfSectionsOutput {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .hf-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ddd6fe;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .hf-card img {
+    width: 100%;
+    height: 165px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+</style>
+
+<script id="hafidaCleanScript">
+(function() {
+  const K_AVATAR = "hf_clean_avatar_v2";
+  const K_BG = "hf_clean_bg_v2";
+  const K_SECTIONS = "hf_clean_sections_v2";
+
+  function fileToDataURL(file, done) {
+    if (!file) return done("");
+    const reader = new FileReader();
+    reader.onload = (ev) => done(ev.target.result || "");
+    reader.readAsDataURL(file);
+  }
+
+  function applyVisuals() {
+    const avatar = localStorage.getItem(K_AVATAR);
+    if (avatar) {
+      const targets = document.querySelectorAll("img[alt*=avatar i], img[alt*=صورة i], .avatar, #avatar, #siteAvatar, header img");
+      targets.forEach((img) => { img.src = avatar; });
+    }
+
+    const bg = localStorage.getItem(K_BG);
+    if (bg) {
+      document.body.classList.add("hf-has-bg");
+      document.body.style.backgroundImage = `url("${bg}")`;
+    } else {
+      document.body.classList.remove("hf-has-bg");
+      document.body.style.backgroundImage = "";
+    }
+  }
+
+  function getSections() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(K_SECTIONS) || "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function renderSections() {
+    let container = document.getElementById("hfSectionsOutput");
+    if (!container) {
+      container = document.createElement("section");
+      container.id = "hfSectionsOutput";
+      const mainEl = document.querySelector("main") || document.body;
+      mainEl.prepend(container);
+    }
+    const items = getSections();
+    container.innerHTML = items.map((sec, idx) => `
+      <article class="hf-card">
+        ${sec.img ? `<img src="${sec.img}" alt="${sec.title || ""}">` : ""}
+        ${sec.title ? `<h4>${sec.title}</h4>` : ""}
+        ${sec.text ? `<p style="margin:6px 0 10px;line-height:1.6;">${sec.text}</p>` : ""}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          ${sec.url ? `<a href="${sec.url}" target="_blank" rel="noopener noreferrer" class="hf-btn" style="text-decoration:none;">${sec.btnText || "فتح الرابط"}</a>` : ""}
+          <button type="button" class="hf-btn-sec" onclick="hfDeleteCleanSection(${idx})">حذف</button>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  window.hfDeleteCleanSection = function(idx) {
+    const items = getSections();
+    items.splice(idx, 1);
+    localStorage.setItem(K_SECTIONS, JSON.stringify(items));
+    renderSections();
+  };
+
+  function mountSuite() {
+    if (document.getElementById("hfMediaSuite")) return;
+    const host = document.querySelector("#adminPanel, #adminBox, .admin-panel, [data-admin]") || document.body;
+    const box = document.createElement("div");
+    box.id = "hfMediaSuite";
+    box.innerHTML = `
+      <h3>تحديث المحتوى والصور والخلفية (ملف مباشر من الجهاز)</h3>
+
+      <div class="hf-row">
+        <label>تغيير الصورة الشخصية (اختر ملف صورة)</label>
+        <input type="file" id="hfAvatarInput" accept="image/*">
+        <button type="button" class="hf-btn-sec" id="hfResetAvatarBtn" style="margin-top:6px;">إعادة الصورة الافتراضية</button>
+      </div>
+
+      <div class="hf-row">
+        <label>تغيير صورة الخلفية (اختر ملف صورة)</label>
+        <input type="file" id="hfBgInput" accept="image/*">
+        <button type="button" class="hf-btn-sec" id="hfClearBgBtn" style="margin-top:6px;">إزالة الخلفية</button>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #ddd6fe;margin:14px 0;">
+
+      <h4>إضافة قسم جديد (صورة ملف + نص + رابط)</h4>
+      <div class="hf-row">
+        <label>العنوان</label>
+        <input type="text" id="hfSecTitle" placeholder="عنوان القسم">
+      </div>
+      <div class="hf-row">
+        <label>النص</label>
+        <textarea id="hfSecText" rows="3" placeholder="اكتب النص هنا"></textarea>
+      </div>
+      <div class="hf-row">
+        <label>الرابط</label>
+        <input type="url" id="hfSecUrl" placeholder="https://example.com">
+      </div>
+      <div class="hf-row">
+        <label>نص زر الرابط</label>
+        <input type="text" id="hfSecBtnLabel" value="زيارة الرابط">
+      </div>
+      <div class="hf-row">
+        <label>صورة القسم (اختر ملف صورة)</label>
+        <input type="file" id="hfSecImgInput" accept="image/*">
+      </div>
+      <button type="button" class="hf-btn" id="hfAddSecBtn">حفظ وإضافة القسم</button>
+    `;
+    host.prepend(box);
+
+    document.getElementById("hfAvatarInput").addEventListener("change", (e) => {
+      fileToDataURL(e.target.files[0], (url) => {
+        if (!url) return;
+        localStorage.setItem(K_AVATAR, url);
+        applyVisuals();
+      });
+    });
+
+    document.getElementById("hfResetAvatarBtn").addEventListener("click", () => {
+      localStorage.removeItem(K_AVATAR);
+      applyVisuals();
+    });
+
+    document.getElementById("hfBgInput").addEventListener("change", (e) => {
+      fileToDataURL(e.target.files[0], (url) => {
+        if (!url) return;
+        localStorage.setItem(K_BG, url);
+        applyVisuals();
+      });
+    });
+
+    document.getElementById("hfClearBgBtn").addEventListener("click", () => {
+      localStorage.removeItem(K_BG);
+      applyVisuals();
+    });
+
+    document.getElementById("hfAddSecBtn").addEventListener("click", () => {
+      const title = document.getElementById("hfSecTitle").value.trim();
+      const text = document.getElementById("hfSecText").value.trim();
+      const url = document.getElementById("hfSecUrl").value.trim();
+      const btnText = document.getElementById("hfSecBtnLabel").value.trim();
+      const file = document.getElementById("hfSecImgInput").files[0];
+
+      fileToDataURL(file, (imgData) => {
+        const items = getSections();
+        items.push({ title, text, url, btnText, img: imgData });
+        localStorage.setItem(K_SECTIONS, JSON.stringify(items));
+        renderSections();
+        document.getElementById("hfSecTitle").value = "";
+        document.getElementById("hfSecText").value = "";
+        document.getElementById("hfSecUrl").value = "";
+        document.getElementById("hfSecImgInput").value = "";
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => { mountSuite(); applyVisuals(); renderSections(); });
+  } else {
+    mountSuite();
+    applyVisuals();
+    renderSections();
+  }
+})();
+</script>
+<!-- HAFIDA_CLEAN_END -->
 </body>
 </html>
