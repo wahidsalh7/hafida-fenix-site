@@ -410,7 +410,7 @@
 
       let state = loadState();
       let pendingHeroData = null, pendingAvatarData = null, pendingFbookCoverData = null;
-      function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+      function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); if (typeof window.cloudSaveState === 'function') { window.cloudSaveState({ state: state, allKeys: Object.assign({}, localStorage) }); } }
       function cleanPhone(num) { return String(num || "").replace(/[^\d]/g, ""); }
       function waUrl(text) {
         const phone = cleanPhone(state.whatsapp) || "34661073853";
@@ -703,16 +703,47 @@ window.SUPABASE_CONFIG = {
     }
   };
 
-  window.addEventListener("DOMContentLoaded", async () => {
+  async function syncStateFromCloudOnce() {
     const cloudData = await window.cloudLoadState();
-    if (cloudData && cloudData.allKeys && typeof cloudData.allKeys === "object") {
+    if (!cloudData) return;
+    let remoteState = null;
+    if (cloudData.state && typeof cloudData.state === "object") {
+      remoteState = cloudData.state;
+    } else if (cloudData.allKeys && typeof cloudData.allKeys === "object") {
       syncingFromCloud = true;
       Object.keys(cloudData.allKeys).forEach((k) => {
         if (!/supabase/i.test(k)) origSetItem(k, cloudData.allKeys[k]);
       });
       syncingFromCloud = false;
+      const sk = (typeof STORAGE_KEY !== "undefined") ? STORAGE_KEY : Object.keys(cloudData.allKeys).find((k) => /hafida|site|state/i.test(k));
+      if (sk && cloudData.allKeys[sk]) {
+        try { remoteState = JSON.parse(cloudData.allKeys[sk]); } catch (_) {}
+      }
     }
-  });
+    if (remoteState && typeof state !== "undefined") {
+      syncingFromCloud = true;
+      if (typeof DEFAULT_DATA !== "undefined") {
+        state = Object.assign({}, structuredClone(DEFAULT_DATA), remoteState);
+      } else {
+        state = Object.assign({}, state, remoteState);
+      }
+      if (typeof STORAGE_KEY !== "undefined") {
+        origSetItem(STORAGE_KEY, JSON.stringify(state));
+      }
+      syncingFromCloud = false;
+      if (typeof renderAll === "function") renderAll();
+      else if (typeof render === "function") render();
+      else if (typeof renderSite === "function") renderSite();
+    }
+  }
+
+  window.syncStateFromCloudOnce = syncStateFromCloudOnce;
+
+  if (document.readyState === "loading") {
+    window.addEventListener("DOMContentLoaded", syncStateFromCloudOnce);
+  } else {
+    syncStateFromCloudOnce();
+  }
 })();
 </script>
 
