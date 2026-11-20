@@ -3,194 +3,576 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hafida Fenix | حفيدة فينيكس</title>
+  <title>hafida fenix | حفيظة فينيكس</title>
   <style>
-    :root { --bg: #0f1115; --card: #181b22; --text: #f3f4f6; --muted: #9ca3af; --accent: #d4af37; --border: #2a2f3a; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
-    .container { max-width: 1000px; margin: 0 auto; }
-    header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--border); }
-    .brand { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
-    .btn { background: var(--accent); color: #111; border: none; padding: 9px 15px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 8px 13px; border-radius: 8px; cursor: pointer; }
-    section { margin-top: 28px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-    h2 { margin-bottom: 14px; color: var(--accent); font-size: 1.2rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-    .item { background: #12151b; border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
-    .item h3 { font-size: 1rem; margin-bottom: 6px; }
-    .muted { color: var(--muted); font-size: 0.9rem; }
-    .admin-panel { display: none; margin-top: 24px; border-color: var(--accent); }
-    .admin-panel.active { display: block; }
-    label { display: block; margin-top: 10px; margin-bottom: 4px; font-size: 0.9rem; color: var(--muted); }
-    input, textarea { width: 100%; padding: 9px 11px; border-radius: 8px; border: 1px solid var(--border); background: #0f1115; color: var(--text); }
+    :root {
+      --bg-deep: #150926;
+      --bg-mid: #28104a;
+      --violet: #7c3aed;
+      --violet-soft: #a855f7;
+      --lavender: #f3e8ff;
+      --white: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --card-tint: #faf5ff;
+      --text-dark: #1e1035;
+      --text-muted: #5b4b73;
+      --border: #e2d4f8;
+      --shadow: 0 14px 36px rgba(29, 9, 59, 0.22);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    body {
+      background: radial-gradient(circle at top center, #3b146e 0%, var(--bg-mid) 42%, var(--bg-deep) 100%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+    .hero-top {
+      position: relative;
+      background: linear-gradient(135deg, rgba(46, 16, 101, 0.92), rgba(109, 40, 217, 0.85)),
+                  url("https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=1400&q=80") center/cover no-repeat;
+      color: var(--white);
+      padding: 28px 20px 72px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .brand-title { font-size: 1.45rem; font-weight: 800; letter-spacing: 0.4px; color: var(--white); }
+    .admin-trigger {
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: 0.25s ease;
+    }
+    .admin-trigger:hover { background: var(--white); color: var(--bg-deep); }
+    .profile-box { display: flex; align-items: center; gap: 20px; margin-top: 28px; flex-wrap: wrap; }
+    .avatar-img {
+      width: 104px; height: 104px; border-radius: 50%; object-fit: cover;
+      border: 3px solid var(--white); box-shadow: 0 10px 25px rgba(0,0,0,0.35); background: #fff;
+    }
+    .hero-info h1 { font-size: 1.85rem; font-weight: 800; color: var(--white); margin-bottom: 4px; }
+    .hero-sub { color: var(--lavender); font-size: 0.98rem; margin-bottom: 14px; }
+    .wa-main-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--white); color: #3b0764; text-decoration: none;
+      padding: 10px 20px; border-radius: 999px; font-weight: 700; font-size: 0.95rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2); transition: 0.25s ease;
+    }
+    .wa-main-btn:hover { background: var(--lavender); transform: translateY(-1px); }
+    .main-content { margin-top: -42px; padding: 0 18px 40px; position: relative; z-index: 2; }
+    .card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 20px; padding: 22px; box-shadow: var(--shadow); margin-bottom: 18px;
+    }
+    .section-heading { font-size: 1.25rem; font-weight: 800; color: #3b0764; margin-bottom: 10px; }
+    .bio-text { color: var(--text-dark); font-size: 1rem; white-space: pre-line; }
+    .acc-item {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(76, 29, 149, 0.08);
+    }
+    .acc-btn {
+      width: 100%; background: linear-gradient(90deg, #faf5ff 0%, #ffffff 100%);
+      border: none; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;
+      font-size: 1.12rem; font-weight: 700; color: #3b0764; cursor: pointer; text-align: right;
+    }
+    .acc-icon { font-size: 1.3rem; color: var(--violet); transition: transform 0.25s ease; }
+    .acc-item.open .acc-icon { transform: rotate(45deg); }
+    .acc-body { display: none; padding: 4px 20px 20px; border-top: 1px solid #f1e7ff; background: var(--card-tint); }
+    .acc-item.open .acc-body { display: block; }
+    .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; margin-top: 14px; }
+    .sub-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+    .sub-card h4 { color: #3b0764; font-size: 1.05rem; margin-bottom: 6px; }
+    .sub-card p { color: var(--text-muted); font-size: 0.93rem; margin-bottom: 10px; white-space: pre-line; }
+    .pay-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .pay-btn, .file-link {
+      display: inline-block; text-decoration: none; font-size: 0.86rem; font-weight: 700;
+      padding: 7px 13px; border-radius: 10px; border: 1px solid var(--violet); cursor: pointer;
+    }
+    .pay-primary { background: var(--violet); color: var(--white); }
+    .pay-outline { background: var(--white); color: #4c1d95; }
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; background: rgba(18, 6, 36, 0.72);
+      align-items: center; justify-content: center; padding: 18px; z-index: 50;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal-box {
+      background: var(--white); color: var(--text-dark); width: 100%; max-width: 390px;
+      border-radius: 18px; padding: 24px; border: 1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .admin-panel { display: none; border: 2px solid var(--violet-soft); background: #fdfaff; }
+    .admin-panel.show { display: block; }
+    label { display: block; margin-top: 12px; margin-bottom: 5px; font-weight: 700; font-size: 0.9rem; color: #3b0764; }
+    input, textarea, select {
+      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #cbb6f0;
+      background: var(--white); color: var(--text-dark); font-size: 0.95rem;
+    }
     textarea { min-height: 85px; resize: vertical; }
-    .row-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .btn-purple {
+      background: linear-gradient(135deg, var(--violet), #5b21b6); color: var(--white);
+      border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer;
+    }
+    .btn-light {
+      background: #f3e8ff; color: #3b0764; border: 1px solid #d8b4fe;
+      padding: 10px 16px; border-radius: 10px; font-weight: 700; cursor: pointer;
+    }
+    .action-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .status-msg { margin-top: 10px; font-size: 0.9rem; font-weight: 700; color: #6d28d9; }
+    footer {
+      background: rgba(20, 8, 38, 0.92); color: var(--white);
+      border-top: 1px solid rgba(255,255,255,0.14); padding: 28px 18px; text-align: center;
+    }
+    .social-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 14px; }
+    .social-links a {
+      color: var(--white); text-decoration: none; background: rgba(168, 85, 247, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.25); padding: 8px 16px; border-radius: 999px;
+      font-weight: 600; font-size: 0.92rem; transition: 0.2s;
+    }
+    .social-links a:hover { background: var(--white); color: var(--bg-deep); }
   </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <div class="brand">Hafida Fenix</div>
-    <div>
-      <button class="btn-ghost" onclick="toggleAdmin()">لوحة الإدارة</button>
+  <header class="hero-top">
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand-title" id="ui-brand-top">hafida fenix</div>
+        <button id="open-admin-btn" class="admin-trigger" type="button">لوحة الإدارة</button>
+      </div>
+      <div class="profile-box">
+        <img id="ui-avatar" class="avatar-img" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80" alt="hafida fenix" />
+        <div class="hero-info">
+          <h1 id="ui-name">hafida fenix</h1>
+          <div class="hero-sub" id="ui-tagline">كاتبة ورواية • خدمات الهجرة والأوراق في إسبانيا • وعي ذاتي واستشارات</div>
+          <a id="ui-wa-hero" class="wa-main-btn" href="https://wa.me/34661073853" target="_blank" rel="noopener">تواصل مباشر عبر واتساب</a>
+        </div>
+      </div>
     </div>
   </header>
 
-  <section id="contacts-section">
-    <h2>التواصل والدفع والاستشارات</h2>
-    <div class="grid" id="settings-view"></div>
-  </section>
+  <main class="main-content">
+    <div class="wrap">
+      <section class="card">
+        <h2 class="section-heading">السيرة الذاتية</h2>
+        <p class="bio-text" id="ui-bio">حفيظة فينيكس (hafida fenix)، كاتبة وصاحبة رواية، متخصصة في مرافقة الأفراد في ملفات الهجرة والأوراق والإجراءات الإدارية في إسبانيا، إلى جانب تقديم خدمات الوعي الذاتي والتوازن الداخلي والاستشارات الموجهة.</p>
+      </section>
 
-  <section id="books-section">
-    <h2>الكتب</h2>
-    <div class="grid" id="books-view"></div>
-  </section>
+      <div class="acc-item open" id="acc-books">
+        <button class="acc-btn" type="button" onclick="toggleAccordion('acc-books')">
+          <span>قسم الكتب</span>
+          <span class="acc-icon">+</span>
+        </button>
+        <div class="acc-body">
+          <div class="grid-cards" id="ui-books-list"></div>
+        </div>
+      </div>
 
-  <section id="articles-section">
-    <h2>المقالات اليومية</h2>
-    <div class="grid" id="articles-view"></div>
-  </section>
+      <div class="acc-item" id="acc-articles">
+        <button class="acc-btn" type="button" onclick="toggleAccordion('acc-articles')">
+          <span>قسم مقالات يومية</span>
+          <span class="acc-icon">+</span>
+        </button>
+        <div class="acc-body">
+          <div class="grid-cards" id="ui-articles-list"></div>
+        </div>
+      </div>
 
-  <section id="admin-panel" class="admin-panel">
-    <h2>إدارة الموقع (تحديث مباشر وإضافة محتوى)</h2>
-    <h3>1. تحديث الاتصال والدفع والاستشارات</h3>
-    <label>البريد الإلكتروني / رقم التواصل</label>
-    <input id="inp-contact" type="text" />
-    <label>معلومات الدفع</label>
-    <input id="inp-payment" type="text" />
-    <label>تفاصيل الاستشارات القانونية</label>
-    <textarea id="inp-consultation"></textarea>
-    <div class="row-actions">
-      <button class="btn" onclick="saveSettings()">حفظ الإعدادات</button>
+      <div class="acc-item" id="acc-services">
+        <button class="acc-btn" type="button" onclick="toggleAccordion('acc-services')">
+          <span>قسم خدمات واستشارات</span>
+          <span class="acc-icon">+</span>
+        </button>
+        <div class="acc-body">
+          <div class="grid-cards" id="ui-services-list"></div>
+        </div>
+      </div>
+
+      <section id="admin-panel" class="card admin-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <h2 class="section-heading" style="margin:0;">لوحة تحكم الإدارة</h2>
+          <button id="lock-admin-btn" class="btn-light" type="button">إغلاق اللوحة</button>
+        </div>
+        <div id="admin-status" class="status-msg"></div>
+
+        <label>اسم الموقع / الهوية</label>
+        <input id="adm-name" type="text" />
+
+        <label>العنوان التعريفي المختصر</label>
+        <input id="adm-tagline" type="text" />
+
+        <label>رابط صورة الخلفية العلوية (الجزء العلوي فقط)</label>
+        <input id="adm-hero-bg" type="text" />
+
+        <label>رابط الصورة الشخصية</label>
+        <input id="adm-avatar" type="text" />
+
+        <label>رقم الواتساب (بصيغة دولية بدون أصفار بادئة أو رموز، مثال: 34661073853)</label>
+        <input id="adm-whatsapp" type="text" />
+
+        <label>رابط بايبال (PayPal)</label>
+        <input id="adm-paypal" type="text" />
+
+        <label>تفاصيل التحويل البنكي</label>
+        <textarea id="adm-bank"></textarea>
+
+        <label>السيرة الذاتية</label>
+        <textarea id="adm-bio"></textarea>
+
+        <div class="action-bar">
+          <button id="save-main-btn" class="btn-purple" type="button">حفظ تعديلات الهوية والدفع والسيرة</button>
+        </div>
+
+        <hr style="margin:22px 0; border:none; border-top:1px solid var(--border);" />
+        <h3 class="section-heading">إضافة كتاب / مقال يومي / خدمة واستشارة / ملف أو رابط</h3>
+
+        <label>نوع الإضافة</label>
+        <select id="adm-item-type">
+          <option value="book">كتاب (مع رابط دفع)</option>
+          <option value="article">مقال يومي</option>
+          <option value="service">خدمة أو استشارة</option>
+        </select>
+
+        <label>العنوان</label>
+        <input id="adm-item-title" type="text" placeholder="مثال: رواية حفيدة فينيكس أو مقال اليوم..." />
+
+        <label>الوصف أو نص المقال</label>
+        <textarea id="adm-item-desc" placeholder="اكتب التفاصيل أو محتوى المقال اليومي..."></textarea>
+
+        <label>رابط دفع مباشر أو رابط خارجي (اختياري)</label>
+        <input id="adm-item-link" type="text" placeholder="https://..." />
+
+        <label>إرفاق ملف من جهازك (اختياري)</label>
+        <input id="adm-item-file" type="file" />
+
+        <div class="action-bar">
+          <button id="add-item-btn" class="btn-purple" type="button">إضافة وحفظ في الموقع</button>
+          <button id="reset-all-btn" class="btn-light" type="button">استعادة البيانات الافتراضية</button>
+        </div>
+      </section>
     </div>
+  </main>
 
-    <hr style="margin: 22px 0; border-color: var(--border);" />
-    <h3>2. إضافة كتاب جديد</h3>
-    <label>عنوان الكتاب</label>
-    <input id="inp-book-title" type="text" />
-    <label>وصف مختصر</label>
-    <textarea id="inp-book-desc"></textarea>
-    <div class="row-actions">
-      <button class="btn" onclick="addBook()">إضافة الكتاب</button>
+  <div id="pin-modal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-box">
+      <h3 class="section-heading">دخول الإدارة</h3>
+      <p style="font-size:0.92rem; color:var(--text-muted); margin-bottom:10px;">أدخل الرمز السري للوصول إلى لوحة التحكم.</p>
+      <label for="pin-input">الرمز السري</label>
+      <input id="pin-input" type="password" inputmode="numeric" placeholder="••••" />
+      <div id="pin-error" style="color:#b91c1c; font-size:0.86rem; margin-top:6px; min-height:20px;"></div>
+      <div class="action-bar">
+        <button id="pin-submit-btn" class="btn-purple" type="button">دخول</button>
+        <button id="pin-cancel-btn" class="btn-light" type="button">إلغاء</button>
+      </div>
     </div>
-
-    <hr style="margin: 22px 0; border-color: var(--border);" />
-    <h3>3. إضافة مقال جديد</h3>
-    <label>عنوان المقال</label>
-    <input id="inp-article-title" type="text" />
-    <label>محتوى المقال</label>
-    <textarea id="inp-article-body"></textarea>
-    <div class="row-actions">
-      <button class="btn" onclick="addArticle()">إضافة المقال</button>
-      <button class="btn-ghost" onclick="resetSiteData()">استعادة الافتراضي</button>
+  </div>
+  <footer>
+    <div class="wrap">
+      <div style="font-weight:700; font-size:1.05rem;">hafida fenix</div>
+      <div style="font-size:0.9rem; opacity:0.85; margin-top:4px;">تابعنا على منصات التواصل الاجتماعي</div>
+      <div class="social-links" id="ui-social-links"></div>
     </div>
-  </section>
-</div>
-<script>
-const STORAGE_KEY = "hafida_fenix_site_v1";
-const defaultData = {
-  settings: {
-    contact: "contact@hafidafenix.com",
-    payment: "تحويل بنكي مباشر / بطاقات الدفع المعتمدة",
-    consultation: "جلسات استشارية متخصصة تُرتّب مسبقاً بعد تأكيد الطلب."
-  },
-  books: [
-    { title: "إصدارات حفيدة فينيكس", desc: "مؤلفات وأبحاث مختارة ضمن مكتبة الموقع." }
-  ],
-  articles: [
-    { title: "مقال افتتاحي", desc: "مساحة للنشر اليومي وتحديث المحتوى مباشرة." }
-  ]
-};
+  </footer>
 
-function loadData() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return structuredClone(defaultData);
-    const parsed = JSON.parse(raw);
-    return {
-      settings: { ...defaultData.settings, ...(parsed.settings || {}) },
-      books: Array.isArray(parsed.books) ? parsed.books : [...defaultData.books],
-      articles: Array.isArray(parsed.articles) ? parsed.articles : [...defaultData.articles]
-    };
-  } catch (_) {
-    return structuredClone(defaultData);
-  }
-}
+  <script>
+    (function () {
+      const STORAGE_KEY = "hafida_fenix_site_v1";
+      const ADMIN_PIN = "1234";
 
-let state = loadData();
+      const DEFAULT_DATA = {
+        name: "hafida fenix",
+        tagline: "كاتبة ورواية • خدمات الهجرة والأوراق في إسبانيا • وعي ذاتي واستشارات",
+        heroBg: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=1400&q=80",
+        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
+        whatsapp: "34661073853",
+        paypal: "https://www.paypal.com",
+        bank: "تحويل بنكي مباشر عبر الحساب المعتمد — تواصل عبر واتساب لتأكيد البيانات قبل التحويل.",
+        bio: "حفيظة فينيكس (hafida fenix)، كاتبة وصاحبة رواية، متخصصة في مرافقة الأفراد في ملفات الهجرة والأوراق والإجراءات الإدارية في إسبانيا، إلى جانب تقديم خدمات الوعي الذاتي والتوازن الداخلي والاستشارات الموجهة.",
+        books: [
+          {
+            id: "book-1",
+            title: "رواية وإصدارات hafida fenix",
+            desc: "إصدارات أدبية وكتابات ملهمة في الوعي الذاتي والحياة. اختر وسيلة الدفع المناسبة لك أو تواصل مباشرة عبر الواتساب.",
+            payLink: "https://www.paypal.com",
+            fileData: "",
+            fileName: ""
+          }
+        ],
+        articles: [
+          {
+            id: "art-1",
+            title: "مقال يومي: الوعي الذاتي وبداية جديدة",
+            desc: "مساحة يومية للتأمل والوعي الذاتي ومشاركة خواطر وأفكار متجددة لكل زوار الموقع.",
+            link: "",
+            fileData: "",
+            fileName: ""
+          }
+        ],
+        services: [
+          {
+            id: "srv-1",
+            title: "خدمات الهجرة والأوراق في إسبانيا",
+            desc: "متابعة وتوجيه ومرافقة في ملفات الإقامة والأوراق والوثائق الإدارية في إسبانيا بخطوات واضحة.",
+            link: "",
+            fileData: "",
+            fileName: ""
+          },
+          {
+            id: "srv-2",
+            title: "خدمات الوعي الذاتي والاستشارات",
+            desc: "جلسات واستشارات فردية لدعم الوعي الذاتي والوضوح الداخلي واتخاذ القرار.",
+            link: "",
+            fileData: "",
+            fileName: ""
+          }
+        ],
+        socials: {
+          instagram: "https://instagram.com",
+          tiktok: "https://tiktok.com",
+          facebook: "https://facebook.com",
+          youtube: "https://youtube.com"
+        }
+      };
 
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  renderAll();
-}
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return structuredClone(DEFAULT_DATA);
+          const parsed = JSON.parse(raw);
+          return {
+            ...structuredClone(DEFAULT_DATA),
+            ...parsed,
+            socials: { ...DEFAULT_DATA.socials, ...(parsed.socials || {}) },
+            books: Array.isArray(parsed.books) ? parsed.books : structuredClone(DEFAULT_DATA.books),
+            articles: Array.isArray(parsed.articles) ? parsed.articles : structuredClone(DEFAULT_DATA.articles),
+            services: Array.isArray(parsed.services) ? parsed.services : structuredClone(DEFAULT_DATA.services)
+          };
+        } catch (e) {
+          return structuredClone(DEFAULT_DATA);
+        }
+      }
 
-function escapeHtml(str) {
-  return String(str ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
+      let state = loadState();
 
-function renderAll() {
-  document.getElementById("settings-view").innerHTML = `
-    <div class="item"><h3>التواصل</h3><p class="muted">${escapeHtml(state.settings.contact)}</p></div>
-    <div class="item"><h3>الدفع</h3><p class="muted">${escapeHtml(state.settings.payment)}</p></div>
-    <div class="item"><h3>الاستشارات</h3><p class="muted">${escapeHtml(state.settings.consultation)}</p></div>
-  `;
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
 
-  document.getElementById("books-view").innerHTML = state.books.map(b => `
-    <div class="item"><h3>${escapeHtml(b.title)}</h3><p class="muted">${escapeHtml(b.desc)}</p></div>
-  `).join("");
+      function cleanPhone(num) {
+        return String(num || "").replace(/[^\d]/g, "");
+      }
 
-  document.getElementById("articles-view").innerHTML = state.articles.map(a => `
-    <div class="item"><h3>${escapeHtml(a.title)}</h3><p class="muted">${escapeHtml(a.desc)}</p></div>
-  `).join("");
+      function waUrl(text) {
+        const phone = cleanPhone(state.whatsapp) || "34661073853";
+        const base = "https://wa.me/" + phone;
+        return text ? base + "?text=" + encodeURIComponent(text) : base;
+      }
 
-  document.getElementById("inp-contact").value = state.settings.contact;
-  document.getElementById("inp-payment").value = state.settings.payment;
-  document.getElementById("inp-consultation").value = state.settings.consultation;
-}
+      window.toggleAccordion = function (id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle("open");
+      };
 
-function toggleAdmin() {
-  document.getElementById("admin-panel").classList.toggle("active");
-}
+      window.showBankInfo = function () {
+        alert(state.bank || "بيانات التحويل البنكي متوفرة عند التواصل عبر الواتساب.");
+      };
 
-function saveSettings() {
-  state.settings = {
-    contact: document.getElementById("inp-contact").value.trim(),
-    payment: document.getElementById("inp-payment").value.trim(),
-    consultation: document.getElementById("inp-consultation").value.trim()
-  };
-  saveState();
-}
+      function renderFileBadge(item) {
+        if (!item.fileData || !item.fileName) return "";
+        return `<a class="file-link pay-outline" href="${item.fileData}" download="${item.fileName}">تحميل الملف: ${item.fileName}</a>`;
+      }
 
-function addBook() {
-  const title = document.getElementById("inp-book-title").value.trim();
-  const desc = document.getElementById("inp-book-desc").value.trim();
-  if (!title) return;
-  state.books.unshift({ title, desc });
-  document.getElementById("inp-book-title").value = "";
-  document.getElementById("inp-book-desc").value = "";
-  saveState();
-}
+      function render() {
+        document.title = (state.name || "hafida fenix") + " | حفيظة فينيكس";
+        document.getElementById("ui-brand-top").textContent = state.name || "hafida fenix";
+        document.getElementById("ui-name").textContent = state.name || "hafida fenix";
+        document.getElementById("ui-tagline").textContent = state.tagline || "";
+        document.getElementById("ui-bio").textContent = state.bio || "";
+        document.getElementById("ui-avatar").src = state.avatar || DEFAULT_DATA.avatar;
+        document.getElementById("ui-wa-hero").href = waUrl("مرحباً hafida fenix، أود التواصل معكم.");
 
-function addArticle() {
-  const title = document.getElementById("inp-article-title").value.trim();
-  const desc = document.getElementById("inp-article-body").value.trim();
-  if (!title) return;
-  state.articles.unshift({ title, desc });
-  document.getElementById("inp-article-title").value = "";
-  document.getElementById("inp-article-body").value = "";
-  saveState();
-}
+        const heroEl = document.querySelector(".hero-top");
+        const bgUrl = state.heroBg || DEFAULT_DATA.heroBg;
+        heroEl.style.backgroundImage = `linear-gradient(135deg, rgba(46, 16, 101, 0.90), rgba(109, 40, 217, 0.82)), url("${bgUrl}")`;
 
-function resetSiteData() {
-  state = structuredClone(defaultData);
-  saveState();
-}
+        const booksEl = document.getElementById("ui-books-list");
+        booksEl.innerHTML = state.books.map((b) => {
+          const pp = (b.payLink && b.payLink.trim()) || state.paypal || "https://www.paypal.com";
+          const waBook = waUrl("مرحباً، أرغب بطلب الكتاب أو الاستفسار عن طرق الدفع لـ: " + b.title);
+          return `
+            <div class="sub-card">
+              <h4>${b.title}</h4>
+              <p>${b.desc}</p>
+              <div class="pay-row">
+                <a class="pay-btn pay-primary" href="${pp}" target="_blank" rel="noopener">الدفع عبر بايبال</a>
+                <button class="pay-btn pay-outline" type="button" onclick="showBankInfo()">تحويل بنكي</button>
+                <a class="pay-btn pay-outline" href="${waBook}" target="_blank" rel="noopener">طرق أخرى / واتساب</a>
+                ${renderFileBadge(b)}
+              </div>
+            </div>
+          `;
+        }).join("");
 
-renderAll();
-</script>
+        const articlesEl = document.getElementById("ui-articles-list");
+        articlesEl.innerHTML = state.articles.map((a) => `
+          <div class="sub-card">
+            <h4>${a.title}</h4>
+            <p>${a.desc}</p>
+            <div class="pay-row">
+              ${a.link ? `<a class="pay-btn pay-primary" href="${a.link}" target="_blank" rel="noopener">فتح الرابط</a>` : ""}
+              ${renderFileBadge(a)}
+            </div>
+          </div>
+        `).join("");
+
+        const servicesEl = document.getElementById("ui-services-list");
+        servicesEl.innerHTML = state.services.map((s) => {
+          const waSrv = waUrl("مرحباً، أود الاستفسار عن خدمة: " + s.title);
+          return `
+            <div class="sub-card">
+              <h4>${s.title}</h4>
+              <p>${s.desc}</p>
+              <div class="pay-row">
+                <a class="pay-btn pay-primary" href="${waSrv}" target="_blank" rel="noopener">حجز / تواصل واتساب</a>
+                ${s.link ? `<a class="pay-btn pay-outline" href="${s.link}" target="_blank" rel="noopener">رابط إضافي</a>` : ""}
+                ${renderFileBadge(s)}
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        const socialMap = [
+          ["إنستغرام", state.socials.instagram],
+          ["تيك توك", state.socials.tiktok],
+          ["فيسبوك", state.socials.facebook],
+          ["يوتيوب", state.socials.youtube]
+        ];
+        document.getElementById("ui-social-links").innerHTML = socialMap
+          .filter(([, url]) => url && url.trim())
+          .map(([label, url]) => `<a href="${url}" target="_blank" rel="noopener">${label}</a>`)
+          .join("");
+      }
+
+      function fillAdminInputs() {
+        document.getElementById("adm-name").value = state.name || "";
+        document.getElementById("adm-tagline").value = state.tagline || "";
+        document.getElementById("adm-hero-bg").value = state.heroBg || "";
+        document.getElementById("adm-avatar").value = state.avatar || "";
+        document.getElementById("adm-whatsapp").value = state.whatsapp || "";
+        document.getElementById("adm-paypal").value = state.paypal || "";
+        document.getElementById("adm-bank").value = state.bank || "";
+        document.getElementById("adm-bio").value = state.bio || "";
+      }
+
+      const modal = document.getElementById("pin-modal");
+      const pinInput = document.getElementById("pin-input");
+      const pinError = document.getElementById("pin-error");
+      const adminPanel = document.getElementById("admin-panel");
+      const statusMsg = document.getElementById("admin-status");
+
+      document.getElementById("open-admin-btn").addEventListener("click", function () {
+        pinError.textContent = "";
+        pinInput.value = "";
+        modal.classList.add("show");
+        setTimeout(() => pinInput.focus(), 60);
+      });
+
+      document.getElementById("pin-cancel-btn").addEventListener("click", function () {
+        modal.classList.remove("show");
+      });
+
+      function checkPin() {
+        if (pinInput.value.trim() === ADMIN_PIN) {
+          modal.classList.remove("show");
+          fillAdminInputs();
+          adminPanel.classList.add("show");
+          statusMsg.textContent = "تم فتح لوحة الإدارة بنجاح.";
+          adminPanel.scrollIntoView({ behavior: "smooth" });
+        } else {
+          pinError.textContent = "الرمز السري غير صحيح.";
+        }
+      }
+
+      document.getElementById("pin-submit-btn").addEventListener("click", checkPin);
+      pinInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") checkPin();
+      });
+
+      document.getElementById("lock-admin-btn").addEventListener("click", function () {
+        adminPanel.classList.remove("show");
+      });
+
+      document.getElementById("save-main-btn").addEventListener("click", function () {
+        state.name = document.getElementById("adm-name").value.trim() || "hafida fenix";
+        state.tagline = document.getElementById("adm-tagline").value.trim();
+        state.heroBg = document.getElementById("adm-hero-bg").value.trim() || DEFAULT_DATA.heroBg;
+        state.avatar = document.getElementById("adm-avatar").value.trim() || DEFAULT_DATA.avatar;
+        state.whatsapp = cleanPhone(document.getElementById("adm-whatsapp").value) || "34661073853";
+        state.paypal = document.getElementById("adm-paypal").value.trim() || "https://www.paypal.com";
+        state.bank = document.getElementById("adm-bank").value.trim();
+        state.bio = document.getElementById("adm-bio").value.trim();
+        saveState();
+        render();
+        statusMsg.textContent = "تم حفظ التعديلات وتحديث الموقع فوراً.";
+      });
+
+      function readFileAsDataUrl(file) {
+        return new Promise((resolve) => {
+          if (!file) return resolve({ fileData: "", fileName: "" });
+          const reader = new FileReader();
+          reader.onload = () => resolve({ fileData: reader.result, fileName: file.name });
+          reader.onerror = () => resolve({ fileData: "", fileName: "" });
+          reader.readAsDataURL(file);
+        });
+      }
+
+      document.getElementById("add-item-btn").addEventListener("click", async function () {
+        const type = document.getElementById("adm-item-type").value;
+        const title = document.getElementById("adm-item-title").value.trim();
+        const desc = document.getElementById("adm-item-desc").value.trim();
+        const link = document.getElementById("adm-item-link").value.trim();
+        const fileInput = document.getElementById("adm-item-file");
+        const fileObj = await readFileAsDataUrl(fileInput.files && fileInput.files[0]);
+
+        if (!title) {
+          statusMsg.textContent = "يرجى إدخال العنوان أولاً.";
+          return;
+        }
+
+        const newItem = {
+          id: "item-" + Date.now(),
+          title,
+          desc,
+          link,
+          payLink: link,
+          fileData: fileObj.fileData,
+          fileName: fileObj.fileName
+        };
+
+        if (type === "book") state.books.unshift(newItem);
+        else if (type === "article") state.articles.unshift(newItem);
+        else state.services.unshift(newItem);
+
+        saveState();
+        render();
+        document.getElementById("adm-item-title").value = "";
+        document.getElementById("adm-item-desc").value = "";
+        document.getElementById("adm-item-link").value = "";
+        fileInput.value = "";
+        statusMsg.textContent = "تمت الإضافة وحفظ العنصر بنجاح.";
+      });
+
+      document.getElementById("reset-all-btn").addEventListener("click", function () {
+        state = structuredClone(DEFAULT_DATA);
+        saveState();
+        fillAdminInputs();
+        render();
+        statusMsg.textContent = "تمت استعادة البيانات الافتراضية.";
+      });
+
+      render();
+    })();
+  </script>
 </body>
 </html>
