@@ -313,7 +313,20 @@
           <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
             <h2 class="sec-title" style="margin:0;">لوحة تحكم موقع حفيظة</h2>
             <button class="btn btn-soft btn-sm" onclick="closeAdmin()">إغلاق اللوحة</button>
-          </div>
+          
+    <div class="sb-adm" id="sbPaymentAdmin">
+      <strong>إعدادات الدفع للخدمات (25€)</strong>
+      <div class="sb-f" style="margin-top:8px">
+        <label for="adminPaypalLink">رابط أو بريد PayPal</label>
+        <input id="adminPaypalLink" type="text" placeholder="https://paypal.me/..." />
+      </div>
+      <div class="sb-f">
+        <label for="adminBankDetails">بيانات التحويل البنكي</label>
+        <input id="adminBankDetails" type="text" placeholder="IBAN / اسم البنك / المستفيد" />
+      </div>
+      <button type="button" class="btn btn-primary" onclick="saveServicePaymentSettings()">حفظ بيانات الدفع</button>
+    </div>
+    </div>
           <div class="tabs">
             <button class="tab active" onclick="switchTab('hp1', this)">الهوية والصور والسيرة</button>
             <button class="tab" onclick="switchTab('hp2', this)">الخدمات</button>
@@ -629,5 +642,175 @@
     render();
     pullHSb();
   </script>
+
+    <style id="sb-only-style">
+      .sb-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.65);display:none;align-items:center;justify-content:center;padding:16px;z-index:9999}
+      .sb-backdrop.open{display:flex}
+      .sb-box{background:#fff;color:#0f172a;width:100%;max-width:460px;border-radius:14px;padding:18px;max-height:92vh;overflow-y:auto}
+      .sb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+      .sb-title{margin:0;font-size:1rem;font-weight:700}
+      .sb-close{border:0;background:#f1f5f9;color:#0f172a;border-radius:8px;padding:5px 10px;cursor:pointer}
+      .sb-tag{background:#eff6ff;color:#1d4ed8;padding:6px 10px;border-radius:8px;font-weight:600;font-size:.88rem;margin-bottom:12px}
+      .sb-f{margin-bottom:10px}
+      .sb-f label{display:block;font-size:.86rem;font-weight:600;margin-bottom:4px}
+      .sb-f input,.sb-f select{width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:8px;font-size:.93rem;box-sizing:border-box}
+      .sb-info{background:#f8fafc;border:1px dashed #94a3b8;border-radius:8px;padding:9px;margin-bottom:10px;font-size:.86rem}
+      .sb-prev{max-width:100%;max-height:140px;display:none;margin-top:6px;border-radius:8px}
+      .sb-btn{width:100%;padding:10px;border:0;border-radius:8px;background:#16a34a;color:#fff;font-weight:700;cursor:pointer}
+      .sb-err{color:#dc2626;font-size:.84rem;min-height:16px;margin-bottom:6px}
+      .sb-adm{border:1px solid #e2e8f0;border-radius:10px;padding:10px;margin-top:10px;background:#f8fafc}
+    </style>
+    <div class="sb-backdrop" id="serviceBookingModal">
+      <div class="sb-box">
+        <div class="sb-head">
+          <h3 class="sb-title">تأكيد حجز الخدمة</h3>
+          <button type="button" class="sb-close" onclick="closeServiceBooking()">إغلاق</button>
+        </div>
+        <div class="sb-tag" id="sbServiceInfo">الخدمة — | السعر: 25€</div>
+        <form id="serviceBookingForm" onsubmit="submitServiceBooking(event)">
+          <div class="sb-f">
+            <label for="sbFullName">الاسم واللقب *</label>
+            <input id="sbFullName" type="text" required placeholder="الاسم واللقب" />
+          </div>
+          <div class="sb-f">
+            <label for="sbDate">اليوم المطلوب *</label>
+            <input id="sbDate" type="date" required />
+          </div>
+          <div class="sb-f">
+            <label for="sbPayMethod">طريقة الدفع (25€) *</label>
+            <select id="sbPayMethod" onchange="renderPaymentDetails()">
+              <option value="PayPal">PayPal</option>
+              <option value="تحويل بنكي">تحويل بنكي</option>
+            </select>
+          </div>
+          <div class="sb-info" id="sbPayDetails"></div>
+          <div class="sb-f">
+            <label for="sbReceipt">صورة إيصال الدفع *</label>
+            <input id="sbReceipt" type="file" accept="image/*" required onchange="previewReceipt(this)" />
+            <img id="sbReceiptPreview" class="sb-prev" alt="صورة الإيصال" />
+          </div>
+          <div class="sb-err" id="sbError"></div>
+          <button type="submit" class="sb-btn">إرسال الحجز عبر واتساب</button>
+        </form>
+      </div>
+    </div>
+    <script id="sb-only-script">
+      (function(){
+        let selectedService = "خدمة";
+        let receiptName = "";
+
+        function getPay(){
+          try { if (typeof state === "object" && state && state.servicePayment) return state.servicePayment; } catch(e){}
+          try { return JSON.parse(localStorage.getItem("hafida_service_payment") || "{}"); } catch(e){ return {}; }
+        }
+
+        window.openServiceBooking = function(name){
+          selectedService = (name || "خدمة").trim();
+          const el = document.getElementById("sbServiceInfo");
+          if (el) el.textContent = "الخدمة: " + selectedService + " | السعر: 25€";
+          const err = document.getElementById("sbError");
+          if (err) err.textContent = "";
+          renderPaymentDetails();
+          const m = document.getElementById("serviceBookingModal");
+          if (m) m.classList.add("open");
+        };
+
+        window.closeServiceBooking = function(){
+          const m = document.getElementById("serviceBookingModal");
+          if (m) m.classList.remove("open");
+        };
+
+        window.renderPaymentDetails = function(){
+          const method = ((document.getElementById("sbPayMethod") || {}).value) || "PayPal";
+          const box = document.getElementById("sbPayDetails");
+          if (!box) return;
+          const cfg = getPay();
+          if (method === "PayPal") {
+            box.innerHTML = cfg.paypal
+              ? 'الدفع عبر <strong>PayPal</strong> (25€): <a href="' + cfg.paypal.replace(/"/g, "&quot;") + '" target="_blank" rel="noopener">' + cfg.paypal + '</a>'
+              : 'الدفع عبر <strong>PayPal</strong> (25€) — أضف رابط PayPal من لوحة الإدارة.';
+          } else {
+            box.innerHTML = cfg.bank
+              ? '<strong>تحويل بنكي</strong> (25€): ' + cfg.bank
+              : '<strong>تحويل بنكي</strong> (25€) — أضف بيانات البنك من لوحة الإدارة.';
+          }
+        };
+
+        window.previewReceipt = function(inp){
+          const img = document.getElementById("sbReceiptPreview");
+          const f = inp && inp.files && inp.files[0];
+          receiptName = f ? f.name : "";
+          if (!img) return;
+          if (!f) { img.style.display = "none"; return; }
+          const r = new FileReader();
+          r.onload = function(ev){ img.src = ev.target.result; img.style.display = "block"; };
+          r.readAsDataURL(f);
+        };
+
+        window.saveServicePaymentSettings = function(){
+          const paypal = (((document.getElementById("adminPaypalLink") || {}).value) || "").trim();
+          const bank = (((document.getElementById("adminBankDetails") || {}).value) || "").trim();
+          const payload = { paypal, bank };
+          try { localStorage.setItem("hafida_service_payment", JSON.stringify(payload)); } catch(e){}
+          try {
+            if (typeof state === "object" && state) {
+              state.servicePayment = payload;
+              if (typeof saveState === "function") saveState();
+            }
+          } catch(e){}
+          renderPaymentDetails();
+          alert("تم حفظ بيانات الدفع.");
+        };
+
+        window.submitServiceBooking = function(e){
+          e.preventDefault();
+          const fullName = (((document.getElementById("sbFullName") || {}).value) || "").trim();
+          const day = (((document.getElementById("sbDate") || {}).value) || "").trim();
+          const method = (((document.getElementById("sbPayMethod") || {}).value) || "PayPal").trim();
+          const fileInp = document.getElementById("sbReceipt");
+          const err = document.getElementById("sbError");
+          const hasImg = !!(fileInp && fileInp.files && fileInp.files.length > 0);
+          if (!fullName || !day || !hasImg) {
+            if (err) err.textContent = "يرجى إدخال الاسم واللقب واليوم وإرفاق صورة الإيصال.";
+            return;
+          }
+          const txt = [
+            "مرحباً حفيظة، طلب حجز خدمة:",
+            "• الخدمة: " + selectedService,
+            "• السعر: 25€",
+            "• الاسم واللقب: " + fullName,
+            "• اليوم المطلوب: " + day,
+            "• طريقة الدفع: " + method,
+            "• الإيصال: سأرسل صورة الإيصال (" + (receiptName || "صورة") + ") في المحادثة."
+          ].join("\n");
+          const link = (typeof waLink === "function") ? waLink(txt) : ("https://wa.me/?text=" + encodeURIComponent(txt));
+          window.open(link, "_blank", "noopener");
+          closeServiceBooking();
+        };
+
+        document.addEventListener("DOMContentLoaded", function(){
+          const cfg = getPay();
+          const pEl = document.getElementById("adminPaypalLink");
+          const bEl = document.getElementById("adminBankDetails");
+          if (pEl && cfg.paypal) pEl.value = cfg.paypal;
+          if (bEl && cfg.bank) bEl.value = cfg.bank;
+
+          const sec = document.getElementById("services") || document.body;
+          sec.addEventListener("click", function(ev){
+            const btn = ev.target.closest("a,button");
+            if (!btn || btn.closest("#serviceBookingModal") || btn.closest("#adminPanel")) return;
+            const href = btn.getAttribute("href") || "";
+            const label = (btn.textContent || "").trim();
+            if (href.includes("wa.me") || /حجز|تواصل|طلب|استشار/i.test(label)) {
+              const card = btn.closest(".card,.service-card,.item,article,li") || sec;
+              const h = card.querySelector("h2,h3,h4,.title,.card-title");
+              ev.preventDefault();
+              openServiceBooking((h && h.textContent.trim()) || label || "خدمة");
+            }
+          }, true);
+        });
+      })();
+    </script>
+    
 </body>
 </html>
