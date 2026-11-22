@@ -509,6 +509,26 @@
             <div class="field"><label>نبذة الكتاب</label><textarea id="hbDesc"></textarea></div>
             <div class="field"><label>الاقتباسات العربية (اقتباس واحد في كل سطر)</label><textarea id="hbQuotes"></textarea></div>
             <button class="btn btn-primary" onclick="saveHBook()">حفظ الكتاب والاقتباسات</button>
+<!-- GB_ADMIN_FULL_START -->
+            <hr style="margin:24px 0;border:none;border-top:1px solid var(--border);" />
+            <h4 style="margin:0 0 8px;">إضافة كتاب جديد إلى المجموعة (مع رابط Gumroad وصورة)</h4>
+            <p style="margin:0 0 14px;color:var(--muted);font-size:0.9rem;">أضف أي كتاب جديد ليظهر مع الكتب الأربعة، ويُحفظ ويُرفع تلقائياً إلى السحابة.</p>
+            <div class="form-grid">
+              <div class="field"><label>اسم الكتاب الجديد</label><input id="newGbTitle" placeholder="مثال: اسم الكتاب" /></div>
+              <div class="field"><label>الكاتب / سطر فرعي</label><input id="newGbAuthor" placeholder="حفيظة الزهاني" /></div>
+              <div class="field"><label>رابط الشراء على Gumroad</label><input id="newGbUrl" value="https://hafidafenix.gumroad.com/" placeholder="https://hafidafenix.gumroad.com/l/..." /></div>
+              <div class="field"><label>صورة الغلاف (من الجهاز)</label><input type="file" id="newGbFile" accept="image/*" /></div>
+              <div class="field"><label>أو رابط صورة الغلاف</label><input id="newGbUrlImg" placeholder="https://..." /></div>
+            </div>
+            <div class="field"><label>ملخص الكتاب الجديد</label><textarea id="newGbSummary" placeholder="نبذة مختصرة عن الكتاب..."></textarea></div>
+            <button type="button" class="btn btn-primary" onclick="addGumroadBook()">إضافة الكتاب وحفظه للسحابة</button>
+
+            <hr style="margin:24px 0;border:none;border-top:1px solid var(--border);" />
+            <h4 style="margin:0 0 8px;">الكتب الحالية في المجموعة (تعديل الصور والروابط أو الحذف)</h4>
+            <p style="margin:0 0 14px;color:var(--muted);font-size:0.9rem;">اختر صورة لكل كتاب من جهازك أو عدّل رابط Gumroad أو الملخص، ثم اضغط حفظ ورفع للسحابة.</p>
+            <div id="hAdminGumroadList" style="display:grid;gap:14px;margin-bottom:14px;"></div>
+            <button type="button" class="btn btn-soft" onclick="saveGumroadBooksChanges()">حفظ تعديلات الكتب ورفعها للسحابة</button>
+            <!-- GB_ADMIN_FULL_END -->
           </div>
 
           <div class="pane" id="hp4">
@@ -579,6 +599,40 @@
       bio: "فاعلة مدنية ومؤثرة مغربية مقيمة في إسبانيا (منطقة مورسيا)، وتُعرف على منصات التواصل باسم «العنقاء حفيظة» (@hafida_fenix).\n\nتقدم خدمات ومرافقة إدارية واستشارات تتعلق بشؤون الهجرة والأجانب (Extranjería)، والعمل، وتسوية الأوضاع القانونية في إسبانيا.\n\nأصدرت كتابها «Todos somos un milagro» («كلنا معجزة»)، وقد كرّمتها القنصلية العامة للمملكة المغربية في مورسيا تقديراً لمسارها في العمل المدني وخدمة الجالية المغربية، كما مثّلت المغرب في مسابقة «ملكة جمال السلام» (Mrs Universe for Peace) في مدريد.",
       whatsapp: "",
       contactDesc: "للاستشارات والمرافقة الإدارية والقانونية في إسبانيا أو لطلب نسخة من الكتاب، تواصل مباشرة عبر واتساب.",
+      gumroadBooks: [
+        {
+          id: "gb1",
+          title: "العودة إلى الذات",
+          author: "تأليف: حفيظة الزهاني",
+          summary: "دليلك للتشافي، التوازن والانطلاقة من جديد؛ رحلة لتهدئة ضجيج الأفكار واستعادة الطمأنينة والوضوح الداخلي.",
+          url: "https://hafidafenix.gumroad.com/",
+          img: ""
+        },
+        {
+          id: "gb2",
+          title: "كلنا معجزة",
+          author: "«بعثٌ من بين الرماد» • حفيظة الزهاني",
+          summary: "دعوة لاستعادة النور الداخلي والنهوض بقوة ووعي بعد الفترات الصعبة وبناء انطلاقة جديدة.",
+          url: "https://hafidafenix.gumroad.com/",
+          img: ""
+        },
+        {
+          id: "gb3",
+          title: "فك التعلق",
+          author: "الخطوة الأولى نحو الحرية • حفيظة الزهاني",
+          summary: "خطوات عملية ووجدانية للتحرر من التعلق المرهق والوصول إلى حرية داخلية وسلام نفسي.",
+          url: "https://hafidafenix.gumroad.com/",
+          img: ""
+        },
+        {
+          id: "gb4",
+          title: "رحلة نحو 10 كيلو أقل",
+          author: "تأليف: حفيظة الزهاني",
+          summary: "خطة غذائية، رياضية ونفسية بدون سكر تجمع بين التنظيم الغذائي والحركة والدعم النفسي لتحقيق تغيير مستدام.",
+          url: "https://hafidafenix.gumroad.com/",
+          img: ""
+        }
+      ],
       book: {
         title: "Todos somos un milagro — كلنا معجزة",
         sub: "Renacimiento desde las cenizas — انبعاث من الرماد | بقلم: حفيظة الزهاني",
@@ -611,7 +665,8 @@
         return {
           ...structuredClone(DEFAULT_STATE),
           ...p,
-          book: { ...DEFAULT_STATE.book, ...(p.book || {}), quotes: Array.isArray(p.book?.quotes) && p.book.quotes.length ? p.book.quotes : DEFAULT_STATE.book.quotes }
+          book: { ...DEFAULT_STATE.book, ...(p.book || {}), quotes: Array.isArray(p.book?.quotes) && p.book.quotes.length ? p.book.quotes : DEFAULT_STATE.book.quotes },
+          gumroadBooks: Array.isArray(p.gumroadBooks) && p.gumroadBooks.length ? p.gumroadBooks : structuredClone(DEFAULT_STATE.gumroadBooks)
         };
       } catch { return structuredClone(DEFAULT_STATE); }
     }
@@ -635,7 +690,9 @@
       if (quoteIdx < 0) quoteIdx = qs.length - 1;
       quoteBox.textContent = qs[quoteIdx] || "";
     }
-    function nextQuote() { quoteIdx++; renderQuote(); }
+    function nextQuote() { quoteIdx++; renderQuote();
+      renderGumroadBooks();
+      renderAdminGumroadBooks(); }
     function prevQuote() { quoteIdx--; renderQuote(); }
 
     function render() {
@@ -728,6 +785,129 @@
       else if (hbCoverUrl.value.trim()) state.book.cover = hbCoverUrl.value.trim();
       saveState(); alert("تم حفظ بيانات الكتاب والاقتباسات.");
     }
+    // GB_JS_FULL_START
+    function getGumroadList() {
+      return Array.isArray(state.gumroadBooks) && state.gumroadBooks.length
+        ? state.gumroadBooks
+        : structuredClone(DEFAULT_STATE.gumroadBooks);
+    }
+
+    async function addGumroadBook() {
+      const titleEl = document.getElementById("newGbTitle");
+      const authorEl = document.getElementById("newGbAuthor");
+      const urlEl = document.getElementById("newGbUrl");
+      const fileEl = document.getElementById("newGbFile");
+      const urlImgEl = document.getElementById("newGbUrlImg");
+      const summaryEl = document.getElementById("newGbSummary");
+
+      const title = (titleEl && titleEl.value || "").trim();
+      if (!title) return alert("أدخل اسم الكتاب أولاً.");
+
+      let img = "";
+      if (fileEl && fileEl.files && fileEl.files[0]) {
+        img = await fileToData(fileEl.files[0]);
+      } else if (urlImgEl && urlImgEl.value.trim()) {
+        img = urlImgEl.value.trim();
+      }
+
+      const list = getGumroadList();
+      list.push({
+        id: "gb_" + Date.now(),
+        title,
+        author: (authorEl && authorEl.value.trim()) || "تأليف: حفيظة الزهاني",
+        summary: (summaryEl && summaryEl.value.trim()) || "",
+        url: (urlEl && urlEl.value.trim()) || "https://hafidafenix.gumroad.com/",
+        img
+      });
+
+      state.gumroadBooks = list;
+      if (titleEl) titleEl.value = "";
+      if (authorEl) authorEl.value = "";
+      if (summaryEl) summaryEl.value = "";
+      if (urlImgEl) urlImgEl.value = "";
+      if (fileEl) fileEl.value = "";
+      if (urlEl && !urlEl.value.trim()) urlEl.value = "https://hafidafenix.gumroad.com/";
+
+      saveState();
+      renderAdminGumroadBooks();
+      alert("تمت إضافة الكتاب وحفظه ورفعه للسحابة.");
+    }
+
+    async function saveGumroadBooksChanges() {
+      const list = getGumroadList();
+      for (let i = 0; i < list.length; i++) {
+        const tEl = document.getElementById("gbEditTitle_" + i);
+        const aEl = document.getElementById("gbEditAuthor_" + i);
+        const sEl = document.getElementById("gbEditSummary_" + i);
+        const uEl = document.getElementById("gbEditUrl_" + i);
+        const fEl = document.getElementById("gbEditFile_" + i);
+        const uiEl = document.getElementById("gbEditImgUrl_" + i);
+
+        if (tEl && tEl.value.trim()) list[i].title = tEl.value.trim();
+        if (aEl) list[i].author = aEl.value.trim();
+        if (sEl) list[i].summary = sEl.value.trim();
+        if (uEl) list[i].url = uEl.value.trim() || "https://hafidafenix.gumroad.com/";
+
+        if (fEl && fEl.files && fEl.files[0]) {
+          list[i].img = await fileToData(fEl.files[0]);
+        } else if (uiEl && uiEl.value.trim()) {
+          list[i].img = uiEl.value.trim();
+        }
+      }
+      state.gumroadBooks = list;
+      saveState();
+      renderAdminGumroadBooks();
+      alert("تم حفظ تعديلات الكتب ورفعها للسحابة.");
+    }
+
+    function delGumroadBook(idx) {
+      const list = getGumroadList();
+      if (!confirm("هل تريد حذف هذا الكتاب من المجموعة؟")) return;
+      list.splice(idx, 1);
+      state.gumroadBooks = list;
+      saveState();
+      renderAdminGumroadBooks();
+    }
+
+    function renderAdminGumroadBooks() {
+      const box = document.getElementById("hAdminGumroadList");
+      if (!box) return;
+      const list = getGumroadList();
+      box.innerHTML = list.map((b, i) => `
+        <div style="border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--card,#fff);">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
+            <strong>${esc(b.title || ("كتاب " + (i + 1)))}</strong>
+            <button type="button" class="btn btn-soft btn-sm" onclick="delGumroadBook(${i})">حذف</button>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label>اسم الكتاب</label><input id="gbEditTitle_${i}" value="${esc(b.title)}" /></div>
+            <div class="field"><label>الكاتب / سطر فرعي</label><input id="gbEditAuthor_${i}" value="${esc(b.author || "")}" /></div>
+            <div class="field"><label>رابط الشراء (Gumroad)</label><input id="gbEditUrl_${i}" value="${esc(b.url || "https://hafidafenix.gumroad.com/")}" /></div>
+            <div class="field"><label>تغيير صورة الغلاف (من الجهاز)</label><input type="file" id="gbEditFile_${i}" accept="image/*" /></div>
+            <div class="field"><label>أو رابط صورة الغلاف</label><input id="gbEditImgUrl_${i}" value="${b.img && !b.img.startsWith("data:") ? esc(b.img) : ""}" placeholder="https://..." /></div>
+          </div>
+          <div class="field"><label>الملخص</label><textarea id="gbEditSummary_${i}">${esc(b.summary || "")}</textarea></div>
+        </div>
+      `).join("");
+    }
+
+    function renderGumroadBooks() {
+      const grid = document.querySelector("#gumroadBooks .gumroad-books-grid");
+      if (!grid) return;
+      const list = getGumroadList();
+      grid.innerHTML = list.map(b => `
+        <article class="gumroad-book-card">
+          ${b.img ? `<img class="gumroad-book-img" src="${esc(b.img)}" alt="${esc(b.title)}" onerror="this.style.display='none'">` : ""}
+          <div class="gumroad-book-body">
+            <h4 class="gumroad-book-title">${esc(b.title)}</h4>
+            <p class="gumroad-book-author">${esc(b.author || "")}</p>
+            <p class="gumroad-book-summary">${esc(b.summary || "")}</p>
+            <a href="${esc(b.url || "https://hafidafenix.gumroad.com/")}" target="_blank" rel="noopener noreferrer" class="btn btn-soft btn-sm gumroad-book-cta">الانتقال لصفحة الشراء</a>
+          </div>
+        </article>
+      `).join("");
+    }
+    // GB_JS_FULL_END
     function saveHContact() { state.whatsapp = hcWa.value.trim(); state.contactDesc = hcDesc.value.trim(); saveState(); alert("تم حفظ الواتساب."); }
     function addHSocial() { const name = hsocName.value.trim(), url = hsocUrl.value.trim(); if (!name || !url) return alert("أدخل الاسم والرابط."); state.socials.push({ id: "hso" + Date.now(), name, url }); hsocName.value = ""; hsocUrl.value = ""; saveState(); }
     function delHSocial(id) { state.socials = state.socials.filter(x => x.id !== id); saveState(); }
