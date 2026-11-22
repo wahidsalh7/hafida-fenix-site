@@ -670,6 +670,21 @@
         };
       } catch { return structuredClone(DEFAULT_STATE); }
     }
+    // AUTO_SYNC_SAVE_START
+    async function saveAndSync(msg = "تم الحفظ والرفع إلى السحابة.") {
+      localStorage.setItem(STORE_KEY, JSON.stringify(state));
+      render();
+      const sb = getSb();
+      if (!sb.url || !sb.key) {
+        if (typeof hsbStatus !== "undefined" && hsbStatus) hsbStatus.textContent = "تم الحفظ محلياً (أدخل بيانات Supabase للرفع السحابي).";
+        if (msg) alert(msg.replace(" والرفع إلى السحابة", " محلياً (لم يتم ضبط Supabase بعد)"));
+        return;
+      }
+      await pushHSb(false);
+      if (msg) alert(msg);
+    }
+    // AUTO_SYNC_SAVE_END
+
     function saveState() {
       localStorage.setItem(STORE_KEY, JSON.stringify(state));
       render();
@@ -767,14 +782,14 @@
       else if (hHeroUrl.value.trim()) state.heroImg = hHeroUrl.value.trim();
       if (hAvatarFile.files[0]) state.avatarImg = await fileToData(hAvatarFile.files[0]);
       else if (hAvatarUrl.value.trim()) state.avatarImg = hAvatarUrl.value.trim();
-      saveState(); alert("تم حفظ الهوية والصور.");
+      await saveAndSync(""); alert("تم حفظ الهوية والصور.");
     }
     function addHService() {
       const title = hsTitle.value.trim(); if (!title) return alert("أدخل عنوان الخدمة.");
       state.services.push({ id: "hs" + Date.now(), title, tag: hsTag.value.trim() || "خدمة", meta: hsMeta.value.trim() || "استشارة", desc: hsDesc.value.trim() });
-      [hsTitle, hsTag, hsMeta, hsDesc].forEach(e => e.value = ""); saveState();
+      [hsTitle, hsTag, hsMeta, hsDesc].forEach(e => e.value = ""); await saveAndSync("");
     }
-    function delHService(id) { state.services = state.services.filter(x => x.id !== id); saveState(); }
+    function delHService(id) { state.services = state.services.filter(x => x.id !== id); await saveAndSync(""); }
 
     async function saveHBook() {
       state.book.title = hbTitle.value.trim(); state.book.sub = hbSub.value.trim();
@@ -784,7 +799,7 @@
       if (qs.length) { state.book.quotes = qs; quoteIdx = 0; }
       if (hbCoverFile.files[0]) state.book.cover = await fileToData(hbCoverFile.files[0]);
       else if (hbCoverUrl.value.trim()) state.book.cover = hbCoverUrl.value.trim();
-      saveState(); alert("تم حفظ بيانات الكتاب والاقتباسات.");
+      await saveAndSync("تم حفظ بيانات الكتاب والاقتباسات ورفعها للسحابة.");
     }
     // GB_JS_FULL_START
     // GB_COMPRESS_START
@@ -858,7 +873,7 @@
       if (fileEl) fileEl.value = "";
       if (urlEl && !urlEl.value.trim()) urlEl.value = "https://hafidafenix.gumroad.com/";
 
-      saveState();
+      await saveAndSync("");
       renderAdminGumroadBooks();
       alert("تمت إضافة الكتاب وحفظه ورفعه للسحابة.");
     }
@@ -885,17 +900,17 @@
         }
       }
       state.gumroadBooks = list;
-      saveState();
+      await saveAndSync("");
       renderAdminGumroadBooks();
       alert("تم حفظ تعديلات الكتب ورفعها للسحابة.");
     }
 
-    function delGumroadBook(idx) {
+    async function delGumroadBook(idx) {
       const list = getGumroadList();
       if (!confirm("هل تريد حذف هذا الكتاب من المجموعة؟")) return;
       list.splice(idx, 1);
       state.gumroadBooks = list;
-      saveState();
+      await saveAndSync("");
       renderAdminGumroadBooks();
     }
 
@@ -938,9 +953,9 @@
       `).join("");
     }
     // GB_JS_FULL_END
-    function saveHContact() { state.whatsapp = hcWa.value.trim(); state.contactDesc = hcDesc.value.trim(); saveState(); alert("تم حفظ الواتساب."); }
-    function addHSocial() { const name = hsocName.value.trim(), url = hsocUrl.value.trim(); if (!name || !url) return alert("أدخل الاسم والرابط."); state.socials.push({ id: "hso" + Date.now(), name, url }); hsocName.value = ""; hsocUrl.value = ""; saveState(); }
-    function delHSocial(id) { state.socials = state.socials.filter(x => x.id !== id); saveState(); }
+    async function saveHContact() { state.whatsapp = hcWa.value.trim(); state.contactDesc = hcDesc.value.trim(); await saveAndSync("تم حفظ الواتساب ورفعه للسحابة."); }
+    async function addHSocial() { const name = hsocName.value.trim(), url = hsocUrl.value.trim(); if (!name || !url) return alert("أدخل الاسم والرابط."); state.socials.push({ id: "hso" + Date.now(), name, url }); hsocName.value = ""; hsocUrl.value = ""; await saveAndSync(""); }
+    async function delHSocial(id) { state.socials = state.socials.filter(x => x.id !== id); await saveAndSync(""); }
 
     function getSb() {
       try {
@@ -975,7 +990,7 @@
       } catch { hsbStatus.textContent = "تعذر الجلب من Supabase."; }
     }
     function exportHBackup() { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: "application/json" })); a.download = "hafida-fenix-backup.json"; a.click(); }
-    function importHBackup(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { state = { ...structuredClone(DEFAULT_STATE), ...JSON.parse(r.result) }; saveState(); alert("تم استيراد النسخة الاحتياطية."); } catch { alert("ملف غير صالح."); } }; r.readAsText(f); }
+    function importHBackup(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { state = { ...structuredClone(DEFAULT_STATE), ...JSON.parse(r.result) }; await saveAndSync(""); alert("تم استيراد النسخة الاحتياطية."); } catch { alert("ملف غير صالح."); } }; r.readAsText(f); }
 
     function switchTab(id, btn) { document.querySelectorAll(".tab").forEach(t => t.classList.remove("active")); document.querySelectorAll(".pane").forEach(p => p.classList.remove("active")); btn.classList.add("active"); document.getElementById(id).classList.add("active"); }
     function openPin() { if (isAdmin) { adminPanel.classList.add("open"); fillHAdmin(); adminPanel.scrollIntoView({ behavior: "smooth" }); return; } pinErr.textContent = ""; pinInput.value = ""; pinModal.classList.add("open"); setTimeout(() => pinInput.focus(), 50); }
@@ -1099,7 +1114,7 @@
           try {
             if (typeof state === "object" && state) {
               state.servicePayment = payload;
-              if (typeof saveState === "function") saveState();
+              if (typeof saveState === "function") await saveAndSync("");
             }
           } catch(e){}
           renderPaymentDetails();
