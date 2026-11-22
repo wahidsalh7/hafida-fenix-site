@@ -690,9 +690,7 @@
       if (quoteIdx < 0) quoteIdx = qs.length - 1;
       quoteBox.textContent = qs[quoteIdx] || "";
     }
-    function nextQuote() { quoteIdx++; renderQuote();
-      renderGumroadBooks();
-      renderAdminGumroadBooks(); }
+    function nextQuote() { quoteIdx++; renderQuote(); }
     function prevQuote() { quoteIdx--; renderQuote(); }
 
     function render() {
@@ -737,6 +735,9 @@
       socialsList.innerHTML = state.socials.map(so => `<a class="soc-link" href="${esc(so.url)}" target="_blank" rel="noopener">${esc(so.name)}</a>`).join("");
 
       if (isAdmin) fillHAdmin();
+    
+      renderGumroadBooks();
+      renderAdminGumroadBooks();
     }
 
     function fillHAdmin() {
@@ -786,6 +787,35 @@
       saveState(); alert("تم حفظ بيانات الكتاب والاقتباسات.");
     }
     // GB_JS_FULL_START
+    // GB_COMPRESS_START
+    const compressCoverFile = (file, maxW = 700, quality = 0.78) => new Promise((resolve, reject) => {
+      if (!file) return resolve("");
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => fileToData(file).then(resolve, reject);
+        img.onload = () => {
+          const scale = Math.min(1, maxW / (img.width || maxW));
+          const w = Math.max(1, Math.round((img.width || maxW) * scale));
+          const h = Math.max(1, Math.round((img.height || maxW) * scale));
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          try {
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          } catch {
+            resolve(reader.result);
+          }
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+    // GB_COMPRESS_END
+
     function getGumroadList() {
       return Array.isArray(state.gumroadBooks) && state.gumroadBooks.length
         ? state.gumroadBooks
@@ -805,7 +835,7 @@
 
       let img = "";
       if (fileEl && fileEl.files && fileEl.files[0]) {
-        img = await fileToData(fileEl.files[0]);
+        img = await compressCoverFile(fileEl.files[0]);
       } else if (urlImgEl && urlImgEl.value.trim()) {
         img = urlImgEl.value.trim();
       }
@@ -849,7 +879,7 @@
         if (uEl) list[i].url = uEl.value.trim() || "https://hafidafenix.gumroad.com/";
 
         if (fEl && fEl.files && fEl.files[0]) {
-          list[i].img = await fileToData(fEl.files[0]);
+          list[i].img = await compressCoverFile(fEl.files[0]);
         } else if (uiEl && uiEl.value.trim()) {
           list[i].img = uiEl.value.trim();
         }
@@ -940,7 +970,7 @@
       try {
         const r = await fetch(`${sb.url}/rest/v1/site_state?id=eq.${SB_ROW_ID}&select=data`, { headers: { "apikey": sb.key, "Authorization": "Bearer " + sb.key } });
         const rows = await r.json();
-        if (Array.isArray(rows) && rows[0]?.data) { state = { ...structuredClone(DEFAULT_STATE), ...rows[0].data, book: { ...DEFAULT_STATE.book, ...(rows[0].data.book || {}) } }; localStorage.setItem(STORE_KEY, JSON.stringify(state)); render(); hsbStatus.textContent = "تم الجلب من Supabase."; }
+        if (Array.isArray(rows) && rows[0]?.data) { const d = rows[0].data || {}; state = { ...structuredClone(DEFAULT_STATE), ...d, book: { ...DEFAULT_STATE.book, ...(d.book || {}) }, gumroadBooks: Array.isArray(d.gumroadBooks) && d.gumroadBooks.length ? d.gumroadBooks : structuredClone(DEFAULT_STATE.gumroadBooks) }; localStorage.setItem(STORE_KEY, JSON.stringify(state)); render(); hsbStatus.textContent = "تم الجلب من Supabase."; }
         else hsbStatus.textContent = "لا يوجد سجل محفوظ بعد — اضغط رفع للسحابة.";
       } catch { hsbStatus.textContent = "تعذر الجلب من Supabase."; }
     }
