@@ -1148,13 +1148,6 @@
           const err = document.getElementById("sbError");
           if (err) err.textContent = "";
           renderPaymentDetails();
-          try {
-            const c = getPay();
-            const p1 = document.getElementById("adminPaypalLink");
-            const b1 = document.getElementById("adminBankDetails");
-            if (p1 && !p1.value && c.paypal) p1.value = c.paypal;
-            if (b1 && !b1.value && c.bank) b1.value = c.bank;
-          } catch(e){}
           const m = document.getElementById("serviceBookingModal");
           if (m) m.classList.add("open");
         };
