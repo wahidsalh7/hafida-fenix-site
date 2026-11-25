@@ -1162,14 +1162,20 @@
           const box = document.getElementById("sbPayDetails");
           if (!box) return;
           const cfg = getPay();
+          const paypalVal = cfg.paypal
+            ? '<a href="' + cfg.paypal.replace(/"/g, "&quot;") + '" target="_blank" rel="noopener">' + cfg.paypal + '</a>'
+            : 'أضف رابط أو بريد PayPal من لوحة التحكم';
+          const bankVal = cfg.bank
+            ? '<span>' + cfg.bank + '</span>'
+            : 'أضف بيانات التحويل البنكي من لوحة التحكم';
           if (method === "PayPal") {
-            box.innerHTML = cfg.paypal
-              ? 'الدفع عبر <strong>PayPal</strong> (25€): <a href="' + cfg.paypal.replace(/"/g, "&quot;") + '" target="_blank" rel="noopener">' + cfg.paypal + '</a>'
-              : 'الدفع عبر <strong>PayPal</strong> (25€) — أضف رابط PayPal من لوحة الإدارة.';
+            box.innerHTML = '<div style="margin-bottom:6px"><strong>السعر: 25€</strong> — طريقة الدفع: <strong>PayPal</strong></div>'
+              + '<div><strong>PayPal:</strong> ' + paypalVal + '</div>'
+              + '<div style="margin-top:4px;font-size:.83rem;color:#475569"><strong>تحويل بنكي:</strong> ' + bankVal + '</div>';
           } else {
-            box.innerHTML = cfg.bank
-              ? '<strong>تحويل بنكي</strong> (25€): ' + cfg.bank
-              : '<strong>تحويل بنكي</strong> (25€) — أضف بيانات البنك من لوحة الإدارة.';
+            box.innerHTML = '<div style="margin-bottom:6px"><strong>السعر: 25€</strong> — طريقة الدفع: <strong>تحويل بنكي</strong></div>'
+              + '<div><strong>تحويل بنكي:</strong> ' + bankVal + '</div>'
+              + '<div style="margin-top:4px;font-size:.83rem;color:#475569"><strong>PayPal:</strong> ' + paypalVal + '</div>';
           }
         };
 
@@ -1184,7 +1190,7 @@
           r.readAsDataURL(f);
         };
 
-        window.saveServicePaymentSettings = function(){
+        window.saveServicePaymentSettings = async function(){
           const paypal = (((document.getElementById("adminPaypalLink") || {}).value) || "").trim();
           const bank = (((document.getElementById("adminBankDetails") || {}).value) || "").trim();
           const payload = { paypal, bank };
@@ -1232,19 +1238,20 @@
           if (pEl && cfg.paypal) pEl.value = cfg.paypal;
           if (bEl && cfg.bank) bEl.value = cfg.bank;
 
-          const sec = document.getElementById("services") || document.body;
-          sec.addEventListener("click", function(ev){
-            const btn = ev.target.closest("a,button");
-            if (!btn || btn.closest("#serviceBookingModal") || btn.closest("#adminPanel")) return;
-            const href = btn.getAttribute("href") || "";
-            const label = (btn.textContent || "").trim();
-            if (href.includes("wa.me") || /حجز|تواصل|طلب|استشار/i.test(label)) {
-              const card = btn.closest(".card,.service-card,.item,article,li") || sec;
+          const sec = document.getElementById("services");
+          if (sec) {
+            sec.addEventListener("click", function(ev){
+              if (ev.target.closest("#serviceBookingModal") || ev.target.closest("#adminPanel")) return;
+              const card = ev.target.closest(".card,.service-card,.item,article,li");
+              if (!card) return;
               const h = card.querySelector("h2,h3,h4,.title,.card-title");
+              const btn = ev.target.closest("a,button");
+              const label = (btn && (btn.textContent || "").trim()) || "";
               ev.preventDefault();
+              ev.stopPropagation();
               openServiceBooking((h && h.textContent.trim()) || label || "خدمة");
-            }
-          }, true);
+            }, true);
+          }
         });
       })();
     </script>
