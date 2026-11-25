@@ -633,8 +633,6 @@
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
               <button class="btn btn-primary" onclick="saveHSb()">حفظ الإعدادات</button>
-              <button class="btn btn-soft" onclick="pushHSb()">رفع للسحابة</button>
-              <button class="btn btn-soft" onclick="pullHSb()">جلب من السحابة</button>
             </div>
             <p id="hsbStatus" style="margin-top:10px;font-weight:700;color:var(--primary);"></p>
             <hr style="margin:20px 0;border:none;border-top:1px solid var(--border);" />
@@ -1046,7 +1044,7 @@
     function saveHSb() {
       const cleanUrl = hsbUrl.value.trim().replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, "");
       localStorage.setItem(SB_KEY, JSON.stringify({ url: cleanUrl, key: hsbKey.value.trim() }));
-      hsbStatus.textContent = "تم حفظ إعدادات Supabase.";
+      hsbStatus.textContent = "تم حفظ إعدادات Supabase وجارٍ الرفع للسحابة..."; if (typeof pushHSb === "function") await pushHSb(false);
     }
     async function pushHSb(silent = false) {
       const sb = getSb(); if (!sb.url || !sb.key) { if (!silent) hsbStatus.textContent = "أدخل URL و Key أولاً."; return; }
@@ -1194,7 +1192,7 @@
           try {
             if (typeof state === "object" && state) {
               state.servicePayment = payload;
-              if (typeof saveState === "function") await saveAndSync("");
+              if (typeof saveAndSync === "function") await saveAndSync("");
             }
           } catch(e){}
           renderPaymentDetails();
