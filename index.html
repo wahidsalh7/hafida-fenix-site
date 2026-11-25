@@ -1070,13 +1070,13 @@
       } catch { hsbStatus.textContent = "تعذر الجلب من Supabase."; }
     }
     function exportHBackup() { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: "application/json" })); a.download = "hafida-fenix-backup.json"; a.click(); }
-    function importHBackup(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { state = { ...structuredClone(DEFAULT_STATE), ...JSON.parse(r.result) }; await saveAndSync(""); alert("تم استيراد النسخة الاحتياطية."); } catch { alert("ملف غير صالح."); } }; r.readAsText(f); }
+    function importHBackup(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = async () => { try { state = { ...structuredClone(DEFAULT_STATE), ...JSON.parse(r.result) }; await saveAndSync(""); alert("تم استيراد النسخة الاحتياطية."); } catch { alert("ملف غير صالح."); } }; r.readAsText(f); }
 
     function switchTab(id, btn) { document.querySelectorAll(".tab").forEach(t => t.classList.remove("active")); document.querySelectorAll(".pane").forEach(p => p.classList.remove("active")); btn.classList.add("active"); document.getElementById(id).classList.add("active"); }
     function openPin() { const adminPanel = document.getElementById("adminPanel"); const pinModal = document.getElementById("pinModal"); const pinInput = document.getElementById("pinInput"); const pinErr = document.getElementById("pinErr"); if (isAdmin) { adminPanel.classList.add("open"); fillHAdmin(); adminPanel.scrollIntoView({ behavior: "smooth" }); return; } pinErr.textContent = ""; pinInput.value = ""; pinModal.classList.add("open"); setTimeout(() => pinInput.focus(), 50); }
-    function closePin() { pinModal.classList.remove("open"); }
-    function checkPin() { if (pinInput.value.trim() === PIN) { isAdmin = true; closePin(); adminPanel.classList.add("open"); fillHAdmin(); adminPanel.scrollIntoView({ behavior: "smooth" }); } else pinErr.textContent = "رمز PIN غير صحيح."; }
-    function closeAdmin() { isAdmin = false; adminPanel.classList.remove("open"); }
+    function closePin() { const m = document.getElementById("pinModal"); if (m) m.classList.remove("open"); }
+    function checkPin() { const inp = document.getElementById("pinInput"); const err = document.getElementById("pinErr"); const panel = document.getElementById("adminPanel"); if (inp && inp.value.trim() === PIN) { isAdmin = true; closePin(); if (panel) { panel.classList.add("open"); panel.style.display = "block"; } if (typeof fillHAdmin === "function") fillHAdmin(); if (panel) panel.scrollIntoView({ behavior: "smooth" }); } else if (err) err.textContent = "رمز PIN غير صحيح."; }
+    function closeAdmin() { isAdmin = false; const panel = document.getElementById("adminPanel"); if (panel) { panel.classList.remove("open"); panel.style.display = ""; } }
 
     render();
     pullHSb();
