@@ -862,12 +862,12 @@
       else if (hAvatarUrl.value.trim()) state.avatarImg = hAvatarUrl.value.trim();
       await saveAndSync(""); alert("تم حفظ الهوية والصور.");
     }
-    async async function addHService() {
+    async function addHService() {
       const title = hsTitle.value.trim(); if (!title) return alert("أدخل عنوان الخدمة.");
       state.services.push({ id: "hs" + Date.now(), title, tag: hsTag.value.trim() || "خدمة", meta: hsMeta.value.trim() || "استشارة", desc: hsDesc.value.trim() });
       [hsTitle, hsTag, hsMeta, hsDesc].forEach(e => e.value = ""); await saveAndSync("");
     }
-    async async function delHService(id) { state.services = state.services.filter(x => x.id !== id); await saveAndSync(""); }
+    async function delHService(id) { state.services = state.services.filter(x => x.id !== id); await saveAndSync(""); }
 
     async function saveHBook() {
       state.book.title = hbTitle.value.trim(); state.book.sub = hbSub.value.trim();
@@ -1041,7 +1041,7 @@
         return { url: (s.url || DEFAULT_SB.url).replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, ""), key: s.key || DEFAULT_SB.key };
       } catch { return { ...DEFAULT_SB }; }
     }
-    async async function saveHSb() {
+    async function saveHSb() {
       const cleanUrl = hsbUrl.value.trim().replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, "");
       localStorage.setItem(SB_KEY, JSON.stringify({ url: cleanUrl, key: hsbKey.value.trim() }));
       hsbStatus.textContent = "تم حفظ إعدادات Supabase وجارٍ الرفع للسحابة..."; if (typeof pushHSb === "function") await pushHSb(false);
