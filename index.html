@@ -1584,5 +1584,111 @@ const HF_PERMANENT_ARTICLES = [
 })();
 </script>
 <!-- HF_CLOUD_SYNC_END -->
+<!-- HF_AUTO_CLOUD_SAVE_START -->
+<script>
+(function() {
+  const REPO = "wahidsalh7/hafida-fenix-site";
+  const BRANCH = "main";
+  const LOCAL_KEY = "hf_articles_full_v1";
+  const TOKEN_KEY = "hf_gh_auto_token";
+
+  function setStatus(msg) {
+    const el = document.getElementById("hf-art-status");
+    if (el) el.textContent = msg;
+  }
+
+  function getItemsNow() {
+    try {
+      const d = JSON.parse(localStorage.getItem(LOCAL_KEY) || "null");
+      if (Array.isArray(d)) return d;
+    } catch (_) {}
+    return typeof HF_PERMANENT_ARTICLES !== "undefined" && Array.isArray(HF_PERMANENT_ARTICLES)
+      ? HF_PERMANENT_ARTICLES
+      : [];
+  }
+
+  async function pushArticlesToGitHub(items) {
+    let token = (localStorage.getItem(TOKEN_KEY) || "").trim();
+    if (!token) {
+      token = (prompt("أدخل GitHub Token مرة واحدة لتفعيل الرفع التلقائي من لوحة الأدمن:") || "").trim();
+      if (!token) {
+        setStatus("تم الحفظ محلياً فقط (لم يُدخل رمز GitHub).");
+        return;
+      }
+      localStorage.setItem(TOKEN_KEY, token);
+    }
+
+    setStatus("جاري الرفع التلقائي إلى السحابة...");
+    try {
+      const apiUrl = "https://api.github.com/repos/" + REPO + "/contents/index.html";
+      const rGet = await fetch(apiUrl + "?ref=" + BRANCH, {
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github+json"
+        }
+      });
+      if (!rGet.ok) throw new Error("فشل قراءة الملف (" + rGet.status + ")");
+      const fileObj = await rGet.json();
+
+      const binStr = atob((fileObj.content || "").replace(/\n/g, ""));
+      const bytes = Uint8Array.from(binStr, c => c.charCodeAt(0));
+      let contentText = new TextDecoder("utf-8").decode(bytes);
+
+      const newCode = "const HF_PERMANENT_ARTICLES = " + JSON.stringify(items, null, 2) + ";";
+      if (/const HF_PERMANENT_ARTICLES = \[.*?\];/s.test(contentText)) {
+        contentText = contentText.replace(/const HF_PERMANENT_ARTICLES = \[.*?\];/s, () => newCode);
+      } else {
+        contentText = contentText.replace("</body>", "<script>\n" + newCode + "\n</script>\n</body>");
+      }
+
+      const outBytes = new TextEncoder().encode(contentText);
+      let outBin = "";
+      outBytes.forEach(b => outBin += String.fromCharCode(b));
+
+      const rPut = await fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: "Auto-update articles from admin panel",
+          content: btoa(outBin),
+          sha: fileObj.sha,
+          branch: BRANCH
+        })
+      });
+
+      if (!rPut.ok) throw new Error("فشل الرفع (" + rPut.status + ")");
+      setStatus("تم الحفظ والرفع للسحابة تلقائياً! سيظهر للجميع خلال ثوانٍ.");
+    } catch (err) {
+      setStatus("حُفظ محلياً، وتعذر الرفع التلقائي: " + err.message);
+    }
+  }
+
+  // ربط الرفع التلقائي عند إرسال نموذج الإضافة أو التعديل
+  const form = document.getElementById("hf-art-form");
+  if (form) {
+    form.addEventListener("submit", function() {
+      setTimeout(() => {
+        pushArticlesToGitHub(getItemsNow());
+      }, 120);
+    }, true);
+  }
+
+  // ربط الرفع التلقائي عند الحذف
+  const origDelete = window.hfDeleteArticle;
+  if (typeof origDelete === "function") {
+    window.hfDeleteArticle = function(id) {
+      origDelete(id);
+      setTimeout(() => {
+        pushArticlesToGitHub(getItemsNow());
+      }, 120);
+    };
+  }
+})();
+</script>
+<!-- HF_AUTO_CLOUD_SAVE_END -->
 </body>
 </html>
