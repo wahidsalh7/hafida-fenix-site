@@ -1366,7 +1366,7 @@
       return;
     }
     try {
-      const res = await fetch(cfg.url + "/rest/v1/articles?select=*&order=created_at.desc", {
+      const res = await fetch(cfg.url + "/rest/v1/site_state?select=*&order=created_at.desc", {
         headers: {
           "apikey": cfg.key,
           "Authorization": "Bearer " + cfg.key
@@ -1388,7 +1388,7 @@
     const cfg = getSbConfig();
     if (!cfg.url || !cfg.key) return;
     try {
-      const res = await fetch(cfg.url + "/rest/v1/articles?id=eq." + encodeURIComponent(id), {
+      const res = await fetch(cfg.url + "/rest/v1/site_state?id=eq." + encodeURIComponent(id), {
         method: "DELETE",
         headers: {
           "apikey": cfg.key,
@@ -1426,7 +1426,7 @@
 
       try {
         setStatus("جاري رفع المقال ومزامنته مع السحابة...");
-        const res = await fetch(cfg.url + "/rest/v1/articles", {
+        const res = await fetch(cfg.url + "/rest/v1/site_state", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
