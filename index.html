@@ -1479,108 +1479,14 @@ const HF_PERMANENT_ARTICLES = [
 </script>
 <!-- HF_ARTICLES_FULL_END -->
 
-<!-- HF_CLOUD_SYNC_START -->
-<script>
-(function() {
-  const REPO = "wahidsalh7/hafida-fenix-site";
-  const RAW_URL = "https://raw.githubusercontent.com/" + REPO + "/main/index.html";
-  const LOCAL_KEY = "hf_articles_full_v1";
 
-  function extractArticlesFromHtml(src) {
-    const m = src.match(/const HF_PERMANENT_ARTICLES = (\[.*?\]);/s);
-    if (!m) return null;
-    try {
-      const parsed = JSON.parse(m[1]);
-      return Array.isArray(parsed) ? parsed : null;
-    } catch (_) {
-      return null;
-    }
-  }
 
-  async function syncFromCloud() {
-    try {
-      const res = await fetch(RAW_URL + "?t=" + Date.now(), { cache: "no-store" });
-      if (!res.ok) return;
-      const remoteHtml = await res.text();
-      const cloudItems = extractArticlesFromHtml(remoteHtml);
-      if (Array.isArray(cloudItems) && cloudItems.length > 0) {
-        const currentLocal = JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]");
-        if (!Array.isArray(currentLocal) || currentLocal.length === 0) {
-          localStorage.setItem(LOCAL_KEY, JSON.stringify(cloudItems));
-          location.reload();
-        }
-      }
-    } catch (_) {}
-  }
-
-  // أيضاً: إتاحة رفع مقالات الهاتف مباشرة باستخدام المستودع المعروف wahidsalh7/hafida-fenix-site
-  const cloudBtn = document.getElementById("hf-art-cloud-btn");
-  if (cloudBtn) {
-    cloudBtn.addEventListener("click", async function() {
-      const statusEl = document.getElementById("hf-art-status");
-      const setMsg = (t) => { if (statusEl) statusEl.textContent = t; };
-      let token = localStorage.getItem("hf_gh_token") || "";
-      if (!token) {
-        token = (prompt("أدخل GitHub Token (يُحفظ مرة واحدة):") || "").trim();
-        if (!token) return;
-        localStorage.setItem("hf_gh_token", token);
-      }
-      const items = JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]");
-      if (!items.length) {
-        setMsg("لا توجد مقالات لرفعها.");
-        return;
-      }
-      setMsg("جاري النشر إلى " + REPO + " ...");
-      try {
-        const apiUrl = "https://api.github.com/repos/" + REPO + "/contents/index.html";
-        const rGet = await fetch(apiUrl, {
-          headers: { "Authorization": "token " + token, "Accept": "application/vnd.github.v3+json" }
-        });
-        if (!rGet.ok) throw new Error("خطأ جلب الملف (" + rGet.status + ")");
-        const data = await rGet.json();
-
-        const bin = atob(data.content.replace(/\n/g, ""));
-        const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-        let txt = new TextDecoder("utf-8").decode(bytes);
-
-        const replacement = "const HF_PERMANENT_ARTICLES = " + JSON.stringify(items, null, 2) + ";";
-        txt = txt.replace(/const HF_PERMANENT_ARTICLES = \[[\s\S]*?\];/, replacement);
-
-        const outBytes = new TextEncoder().encode(txt);
-        let outBin = "";
-        outBytes.forEach(b => outBin += String.fromCharCode(b));
-
-        const rPut = await fetch(apiUrl, {
-          method: "PUT",
-          headers: {
-            "Authorization": "token " + token,
-            "Accept": "application/vnd.github.v3+json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            message: "Sync articles from mobile to cloud",
-            content: btoa(outBin),
-            sha: data.sha,
-            branch: "main"
-          })
-        });
-        if (!rPut.ok) throw new Error("خطأ الرفع (" + rPut.status + ")");
-        setMsg("تم نشر المقالات للسحابة بنجاح!");
-      } catch (e) {
-        setMsg("تعذر النشر: " + e.message);
-      }
-    });
-  }
-
-  syncFromCloud();
-})();
-</script>
-<!-- HF_CLOUD_SYNC_END -->
 <!-- HF_AUTO_CLOUD_SAVE_START -->
 <script>
 (function() {
   const REPO = "wahidsalh7/hafida-fenix-site";
   const BRANCH = "main";
+  const RAW_URL = "https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/index.html";
   const LOCAL_KEY = "hf_articles_full_v1";
   const TOKEN_KEY = "hf_gh_auto_token";
 
@@ -1589,14 +1495,43 @@ const HF_PERMANENT_ARTICLES = [
     if (el) el.textContent = msg;
   }
 
+  function extractArticlesFromSrc(src) {
+    const m = src.match(/const HF_PERMANENT_ARTICLES = (\[.*?\]);/s);
+    if (!m) return null;
+    try {
+      const arr = JSON.parse(m[1]);
+      return Array.isArray(arr) ? arr : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   function getItemsNow() {
     try {
       const d = JSON.parse(localStorage.getItem(LOCAL_KEY) || "null");
       if (Array.isArray(d)) return d;
     } catch (_) {}
-    return typeof HF_PERMANENT_ARTICLES !== "undefined" && Array.isArray(HF_PERMANENT_ARTICLES)
+    return (typeof HF_PERMANENT_ARTICLES !== "undefined" && Array.isArray(HF_PERMANENT_ARTICLES))
       ? HF_PERMANENT_ARTICLES
       : [];
+  }
+
+  async function syncFromCloudOnLoad() {
+    try {
+      const res = await fetch(RAW_URL + "?t=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) return;
+      const remoteHtml = await res.text();
+      const cloudItems = extractArticlesFromSrc(remoteHtml);
+      if (Array.isArray(cloudItems)) {
+        const currentLocal = JSON.parse(localStorage.getItem(LOCAL_KEY) || "null");
+        if (!Array.isArray(currentLocal) || JSON.stringify(currentLocal) !== JSON.stringify(cloudItems)) {
+          localStorage.setItem(LOCAL_KEY, JSON.stringify(cloudItems));
+          if (typeof renderAll === "function") {
+            renderAll();
+          }
+        }
+      }
+    } catch (_) {}
   }
 
   async function pushArticlesToGitHub(items) {
@@ -1604,7 +1539,7 @@ const HF_PERMANENT_ARTICLES = [
     if (!token) {
       token = (prompt("أدخل GitHub Token مرة واحدة لتفعيل الرفع التلقائي من لوحة الأدمن:") || "").trim();
       if (!token) {
-        setStatus("تم الحفظ محلياً فقط (لم يُدخل رمز GitHub).");
+        setStatus("تم الحفظ محلياً فقط.");
         return;
       }
       localStorage.setItem(TOKEN_KEY, token);
@@ -1653,32 +1588,28 @@ const HF_PERMANENT_ARTICLES = [
       });
 
       if (!rPut.ok) throw new Error("فشل الرفع (" + rPut.status + ")");
-      setStatus("تم الحفظ والرفع للسحابة تلقائياً! سيظهر للجميع خلال ثوانٍ.");
+      setStatus("تم الحفظ والرفع للسحابة تلقائياً!");
     } catch (err) {
       setStatus("حُفظ محلياً، وتعذر الرفع التلقائي: " + err.message);
     }
   }
 
-  // ربط الرفع التلقائي عند إرسال نموذج الإضافة أو التعديل
   const form = document.getElementById("hf-art-form");
   if (form) {
     form.addEventListener("submit", function() {
-      setTimeout(() => {
-        pushArticlesToGitHub(getItemsNow());
-      }, 120);
+      setTimeout(() => pushArticlesToGitHub(getItemsNow()), 120);
     }, true);
   }
 
-  // ربط الرفع التلقائي عند الحذف
   const origDelete = window.hfDeleteArticle;
   if (typeof origDelete === "function") {
     window.hfDeleteArticle = function(id) {
       origDelete(id);
-      setTimeout(() => {
-        pushArticlesToGitHub(getItemsNow());
-      }, 120);
+      setTimeout(() => pushArticlesToGitHub(getItemsNow()), 120);
     };
   }
+
+  syncFromCloudOnLoad();
 })();
 </script>
 <!-- HF_AUTO_CLOUD_SAVE_END -->
