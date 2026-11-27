@@ -1465,10 +1465,11 @@
 })();
 </script>
 
+
 <!-- HF_ARTICLES_SYNC_START -->
 <script>
 (function() {
-  const CACHE_KEY = "hafida_fenix_articles_cache_v1";
+  const LOCAL_KEY = "hf_articles_v1";
 
   function getSbConfig() {
     if (typeof getSb === "function") {
@@ -1482,11 +1483,6 @@
       const saved = JSON.parse(localStorage.getItem(k) || "{}");
       if (saved.url && saved.key) return { url: String(saved.url).replace(/\/+$/, ""), key: String(saved.key).trim() };
     } catch (_) {}
-    const uEl = document.getElementById("hsbUrl");
-    const kEl = document.getElementById("hsbKey");
-    if (uEl && kEl && uEl.value.trim() && kEl.value.trim()) {
-      return { url: uEl.value.trim().replace(/\/+$/, ""), key: kEl.value.trim() };
-    }
     return { url: "", key: "" };
   }
 
@@ -1495,12 +1491,12 @@
     if (el) el.textContent = msg;
   }
 
-  function readCache() {
-    try { return JSON.parse(localStorage.getItem(CACHE_KEY) || "[]"); } catch (_) { return []; }
+  function readLocal() {
+    try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]"); } catch (_) { return []; }
   }
 
-  function writeCache(items) {
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify(items)); } catch (_) {}
+  function writeLocal(items) {
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify(items)); } catch (_) {}
   }
 
   function ytId(url) {
@@ -1539,48 +1535,80 @@
       admBox.innerHTML = loggedIn ? items.map(it => (
         '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;background:#fff;">' +
           '<span><strong>' + (it.title || "") + '</strong> (' + (it.category || "مقال") + ')</span>' +
-          '<button type="button" class="btn btn-danger btn-sm" onclick="hfDelCloudArt(\'' + String(it.id).replace(/'/g, "") + '\')">حذف من السحابة</button>' +
+          '<button type="button" class="btn btn-danger btn-sm" onclick="hfDelCloudArt(\'' + String(it.id).replace(/'/g, "") + '\')">حذف</button>' +
         '</div>'
       )).join("") : "";
     }
   }
 
-  async function fetchCloudArticles() {
+  async function pullSiteStateArticles() {
     const cfg = getSbConfig();
-    if (!cfg.url || !cfg.key) {
-      setStatus("تنبيه: تأكد من حفظ إعدادات Supabase في تبويب Supabase.");
-      renderAll(readCache());
-      return;
-    }
+    const rowId = (typeof SB_ROW_ID !== "undefined") ? SB_ROW_ID : "default";
+    if (!cfg.url || !cfg.key) return readLocal();
     try {
-      const res = await fetch(cfg.url + "/rest/v1/articles?select=*&order=created_at.desc", {
+      const res = await fetch(cfg.url + "/rest/v1/site_state?id=eq." + encodeURIComponent(rowId) + "&select=data", {
         headers: { "apikey": cfg.key, "Authorization": "Bearer " + cfg.key }
       });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const data = await res.json();
-      writeCache(data);
-      setStatus("متصل بالسحابة (" + cfg.url.replace(/^https?:\/\//, "") + ") — عدد المقالات: " + data.length);
-      renderAll(data);
-    } catch (err) {
-      setStatus("تنبيه السحابة: " + (err && err.message ? err.message : String(err)));
-      renderAll(readCache());
+      if (!res.ok) return readLocal();
+      const rows = await res.json();
+      const arts = (Array.isArray(rows) && rows[0] && rows[0].data && Array.isArray(rows[0].data.articles)) ? rows[0].data.articles : null;
+      if (arts) {
+        writeLocal(arts);
+        return arts;
+      }
+      return readLocal();
+    } catch (_) {
+      return readLocal();
     }
+  }
+
+  async function pushSiteStateArticles(items) {
+    writeLocal(items);
+    const cfg = getSbConfig();
+    const rowId = (typeof SB_ROW_ID !== "undefined") ? SB_ROW_ID : "default";
+    if (!cfg.url || !cfg.key) {
+      setStatus("تم الحفظ محلياً.");
+      return true;
+    }
+    try {
+      const rGet = await fetch(cfg.url + "/rest/v1/site_state?id=eq." + encodeURIComponent(rowId) + "&select=data", {
+        headers: { "apikey": cfg.key, "Authorization": "Bearer " + cfg.key }
+      });
+      if (!rGet.ok) throw new Error("قراءة site_state فشل: HTTP " + rGet.status);
+      const rows = await rGet.json();
+      const currentData = (Array.isArray(rows) && rows[0] && rows[0].data && typeof rows[0].data === "object") ? rows[0].data : {};
+      const nextData = Object.assign({}, currentData, { articles: items });
+
+      const rPatch = await fetch(cfg.url + "/rest/v1/site_state?id=eq." + encodeURIComponent(rowId), {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": cfg.key,
+          "Authorization": "Bearer " + cfg.key,
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify({ data: nextData })
+      });
+      if (!rPatch.ok) throw new Error(await rPatch.text() || ("HTTP " + rPatch.status));
+      setStatus("تم الحفظ والمزامنة بنجاح.");
+      return true;
+    } catch (err) {
+      setStatus("تم الحفظ محلياً (تنبيه المزامنة: " + err.message + ")");
+      return true;
+    }
+  }
+
+  async function refreshArticles() {
+    const items = await pullSiteStateArticles();
+    renderAll(items);
   }
 
   window.hfDelCloudArt = async function(id) {
     if (typeof isAdmin === "undefined" || !isAdmin) return;
-    const cfg = getSbConfig();
-    if (!cfg.url || !cfg.key) return;
-    try {
-      const res = await fetch(cfg.url + "/rest/v1/articles?id=eq." + encodeURIComponent(id), {
-        method: "DELETE",
-        headers: { "apikey": cfg.key, "Authorization": "Bearer " + cfg.key }
-      });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      await fetchCloudArticles();
-    } catch (err) {
-      setStatus("خطأ الحذف: " + (err && err.message ? err.message : String(err)));
-    }
+    const current = await pullSiteStateArticles();
+    const next = current.filter(x => String(x.id) !== String(id));
+    await pushSiteStateArticles(next);
+    renderAll(next);
   };
 
   const form = document.getElementById("hfCloudArtForm");
@@ -1591,12 +1619,7 @@
         setStatus("سجّل الدخول إلى لوحة التحكم أولاً.");
         return;
       }
-      const cfg = getSbConfig();
-      if (!cfg.url || !cfg.key) {
-        setStatus("إعدادات Supabase غير متوفرة — احفظ الرابط والمفتاح في تبويب Supabase.");
-        return;
-      }
-      const payload = {
+      const newItem = {
         id: "art-" + Date.now(),
         title: document.getElementById("hfArtTitle").value.trim(),
         category: document.getElementById("hfArtCat").value,
@@ -1604,41 +1627,27 @@
         url: document.getElementById("hfArtUrl").value.trim(),
         date: new Date().toLocaleDateString("ar-EG")
       };
-      try {
-        setStatus("جاري النشر والمزامنة مع السحابة...");
-        const res = await fetch(cfg.url + "/rest/v1/articles", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "apikey": cfg.key,
-            "Authorization": "Bearer " + cfg.key,
-            "Prefer": "return=representation"
-          },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) throw new Error(await res.text() || ("HTTP " + res.status));
-        form.reset();
-        await fetchCloudArticles();
-        setStatus("تم النشر والمزامنة مع السحابة بنجاح.");
-      } catch (err) {
-        setStatus("خطأ النشر: " + (err && err.message ? err.message : String(err))); console.error("HF_ART_ERR:", err);
-      }
+      const current = await pullSiteStateArticles();
+      const next = [newItem].concat(current);
+      await pushSiteStateArticles(next);
+      form.reset();
+      renderAll(next);
     });
   }
 
   const syncBtn = document.getElementById("hfSyncNowBtn");
-  if (syncBtn) syncBtn.addEventListener("click", fetchCloudArticles);
+  if (syncBtn) syncBtn.addEventListener("click", refreshArticles);
 
   const origCheckPin = window.checkPin;
   if (typeof origCheckPin === "function") {
     window.checkPin = function() {
       origCheckPin();
-      fetchCloudArticles();
+      refreshArticles();
     };
   }
 
-  renderAll(readCache());
-  fetchCloudArticles();
+  renderAll(readLocal());
+  refreshArticles();
 })();
 </script>
 <!-- HF_ARTICLES_SYNC_END -->
