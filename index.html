@@ -648,7 +648,28 @@
               <button class="btn btn-soft btn-sm" onclick="exportHBackup()">تصدير نسخة JSON</button>
               <input type="file" accept="application/json" onchange="importHBackup(event)" />
             </div>
-          </div>
+          
+        <div class="pane" id="hp6">
+          <h3 style="margin-top:0;">إضافة مقال أو رابط (يوتيوب / إنستغرام / رابط)</h3>
+          <div id="hfArtStatus" style="font-size:0.88rem;margin-bottom:10px;opacity:0.85;"></div>
+          <form id="hfArtForm" style="display:grid;gap:10px;margin-bottom:16px;">
+            <input type="text" id="hfArtTitle" placeholder="عنوان المقال" required />
+            <select id="hfArtCat">
+              <option value="مقال">مقال</option>
+              <option value="يوتيوب">فيديو / يوتيوب</option>
+              <option value="إنستغرام">إنستغرام</option>
+              <option value="رابط">رابط خارجي</option>
+            </select>
+            <textarea id="hfArtBody" rows="4" placeholder="محتوى المقال أو وصف الرابط..." required></textarea>
+            <input type="url" id="hfArtUrl" placeholder="رابط يوتيوب، إنستغرام، أو أي رابط آخر (اختياري)" />
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button type="submit" class="btn btn-primary">نشر المقال</button>
+              <button type="button" class="btn btn-soft" id="hfExportArtsBtn">نسخ كود المقالات للنشر الدائم</button>
+            </div>
+          </form>
+          <div id="hfAdminArticlesList" style="display:grid;gap:8px;"></div>
+        </div>
+</div>
         </div>
       </div>
     </section>
@@ -1264,6 +1285,7 @@
       })();
     </script>
     
+
 <!-- HF_ARTICLES_CLEAN_START -->
 <script>
 const HF_STATIC_ARTICLES = [];
@@ -1307,7 +1329,6 @@ const HF_STATIC_ARTICLES = [];
     const items = loadArticles();
     const pubBox = document.getElementById("hfArticlesList");
     const admBox = document.getElementById("hfAdminArticlesList");
-    const loggedIn = (typeof isAdmin !== "undefined") && Boolean(isAdmin);
 
     if (pubBox) {
       pubBox.innerHTML = items.length ? items.map(it => (
@@ -1321,17 +1342,16 @@ const HF_STATIC_ARTICLES = [];
     }
 
     if (admBox) {
-      admBox.innerHTML = loggedIn ? items.map(it => (
+      admBox.innerHTML = items.map(it => (
         '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;background:#fff;">' +
           '<span><strong>' + (it.title || "") + '</strong> (' + (it.category || "مقال") + ')</span>' +
           '<button type="button" class="btn btn-danger btn-sm" onclick="hfDeleteCleanArt(\'' + String(it.id).replace(/'/g, "") + '\')">حذف</button>' +
         '</div>'
-      )).join("") : "";
+      )).join("");
     }
   }
 
   window.hfDeleteCleanArt = function(id) {
-    if (typeof isAdmin === "undefined" || !isAdmin) return;
     const next = loadArticles().filter(x => String(x.id) !== String(id));
     saveArticles(next);
     renderAll();
@@ -1342,10 +1362,6 @@ const HF_STATIC_ARTICLES = [];
   if (form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      if (typeof isAdmin === "undefined" || !isAdmin) {
-        setStatus("سجّل الدخول إلى لوحة التحكم أولاً.");
-        return;
-      }
       const next = [{
         id: "art-" + Date.now(),
         title: document.getElementById("hfArtTitle").value.trim(),
@@ -1367,19 +1383,11 @@ const HF_STATIC_ARTICLES = [];
       const code = "const HF_STATIC_ARTICLES = " + JSON.stringify(loadArticles(), null, 2) + ";";
       try {
         await navigator.clipboard.writeText(code);
-        setStatus("تم نسخ كود المقالات! يمكنك إرساله هنا لأثبته في الموقع لكل الزوار.");
+        setStatus("تم نسخ كود المقالات! أرسله هنا لأثبته في الموقع لكل الزوار.");
       } catch (_) {
         prompt("انسخ هذا الكود:", code);
       }
     });
-  }
-
-  const origCheckPin = window.checkPin;
-  if (typeof origCheckPin === "function") {
-    window.checkPin = function() {
-      origCheckPin();
-      renderAll();
-    };
   }
 
   renderAll();
