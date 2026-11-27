@@ -555,7 +555,6 @@
             <button class="tab" onclick="switchTab('hp4', this)">واتساب والسوشيل</button>
             <button class="tab" onclick="switchTab('hp5', this)">Supabase ونسخ احتياطي</button>
             <button class="tab" onclick="switchTab('hp6', this)">المقالات</button>
-            <button class="tab" onclick="switchTab('hp6', this)">المقالات</button>
           </div>
 
           <div class="pane active" id="hp1">
@@ -1465,17 +1464,30 @@
   fetchCloudArticles();
 })();
 </script>
+
 <!-- HF_ARTICLES_SYNC_START -->
 <script>
 (function() {
   const CACHE_KEY = "hafida_fenix_articles_cache_v1";
 
   function getSbConfig() {
-    const sb = (typeof state !== "undefined" && state && state.sb) ? state.sb : ((typeof CFG !== "undefined" && CFG && CFG.sb) ? CFG.sb : {});
-    return {
-      url: (sb.url || "").replace(/\/+$/, ""),
-      key: sb.anonKey || sb.key || sb.serviceKey || ""
-    };
+    if (typeof getSb === "function") {
+      try {
+        const s = getSb() || {};
+        if (s.url && s.key) return { url: String(s.url).replace(/\/+$/, ""), key: String(s.key).trim() };
+      } catch (_) {}
+    }
+    try {
+      const k = (typeof SB_KEY !== "undefined") ? SB_KEY : "hafida_sb_v1";
+      const saved = JSON.parse(localStorage.getItem(k) || "{}");
+      if (saved.url && saved.key) return { url: String(saved.url).replace(/\/+$/, ""), key: String(saved.key).trim() };
+    } catch (_) {}
+    const uEl = document.getElementById("hsbUrl");
+    const kEl = document.getElementById("hsbKey");
+    if (uEl && kEl && uEl.value.trim() && kEl.value.trim()) {
+      return { url: uEl.value.trim().replace(/\/+$/, ""), key: kEl.value.trim() };
+    }
+    return { url: "", key: "" };
   }
 
   function setStatus(msg) {
@@ -1536,7 +1548,7 @@
   async function fetchCloudArticles() {
     const cfg = getSbConfig();
     if (!cfg.url || !cfg.key) {
-      setStatus("تنبيه: إعدادات Supabase غير متوفرة.");
+      setStatus("تنبيه: تأكد من حفظ إعدادات Supabase في تبويب Supabase.");
       renderAll(readCache());
       return;
     }
@@ -1547,7 +1559,7 @@
       if (!res.ok) throw new Error("HTTP " + res.status);
       const data = await res.json();
       writeCache(data);
-      setStatus("متصل بالسحابة: " + data.length + " مقال.");
+      setStatus("متصل بالسحابة (" + cfg.url.replace(/^https?:\/\//, "") + ") — عدد المقالات: " + data.length);
       renderAll(data);
     } catch (err) {
       setStatus("تنبيه السحابة: " + err.message);
@@ -1581,7 +1593,7 @@
       }
       const cfg = getSbConfig();
       if (!cfg.url || !cfg.key) {
-        setStatus("إعدادات Supabase غير متوفرة.");
+        setStatus("إعدادات Supabase غير متوفرة — احفظ الرابط والمفتاح في تبويب Supabase.");
         return;
       }
       const payload = {
