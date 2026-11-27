@@ -521,7 +521,7 @@
       <div class="container" style="max-width:1060px;margin:auto;padding:0 20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
           <h2 style="margin:0;">المقالات</h2>
-          <button type="button" class="btn btn-soft btn-sm" onclick="hfOpenArticlesAdmin()">إضافة / تعديل مقال</button>
+          
         </div>
         <div id="hf-art-public-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;"></div>
       </div>
@@ -1480,5 +1480,75 @@ const HF_PERMANENT_ARTICLES = [
 <!-- HF_ARTICLES_FULL_END -->
 
   <script src="assets/articles-sync.js" defer></script>
+<script>
+(function() {
+  function hidePublicAdminControls() {
+    const adminModalOrPanel =
+      document.getElementById("adminModal") ||
+      document.getElementById("adminPanel") ||
+      document.getElementById("hf-admin-panel") ||
+      document.querySelector('[data-admin-panel], .admin-panel, .admin-modal');
+
+    document.querySelectorAll("button, a").forEach((el) => {
+      const t = (el.textContent || "").trim();
+      const isMgmtBtn =
+        t.includes("إضافة / تعديل مقال") ||
+        t.includes("نسخة احتياطية JSON") ||
+        t.includes("استيراد JSON") ||
+        t.includes("رفع للسحابة الآن");
+
+      if (!isMgmtBtn) return;
+
+      const insideAdmin = adminModalOrPanel ? adminModalOrPanel.contains(el) : false;
+      if (!insideAdmin) {
+        el.style.display = "none";
+      }
+    });
+
+    // إضافة أزرار النسخ الاحتياطي والرفع للسحابة داخل لوحة الأدمن إن لم تكن موجودة
+    if (adminModalOrPanel && !document.getElementById("hf-admin-cloud-tools")) {
+      const box = document.createElement("div");
+      box.id = "hf-admin-cloud-tools";
+      box.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;";
+
+      const syncBtn = document.createElement("button");
+      syncBtn.type = "button";
+      syncBtn.textContent = "رفع للسحابة الآن";
+      syncBtn.style.cssText = "padding:7px 14px;border-radius:8px;border:none;background:#111;color:#fff;cursor:pointer;";
+      syncBtn.addEventListener("click", () => {
+        if (typeof window.hfSyncArticlesCloud === "function") window.hfSyncArticlesCloud();
+      });
+
+      const expBtn = document.createElement("button");
+      expBtn.type = "button";
+      expBtn.textContent = "نسخة احتياطية JSON";
+      expBtn.style.cssText = "padding:7px 14px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;";
+      expBtn.addEventListener("click", () => {
+        let data = [];
+        try { data = JSON.parse(localStorage.getItem("hf_articles_full_v1") || "[]"); } catch (_) {}
+        if (!Array.isArray(data) || !data.length) {
+          data = Array.isArray(window.HF_PERMANENT_ARTICLES) ? window.HF_PERMANENT_ARTICLES : [];
+        }
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "hafida-fenix-articles-backup.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      box.appendChild(syncBtn);
+      box.appendChild(expBtn);
+      adminModalOrPanel.prepend(box);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    hidePublicAdminControls();
+    setTimeout(hidePublicAdminControls, 500);
+  });
+})();
+</script>
 </body>
 </html>
