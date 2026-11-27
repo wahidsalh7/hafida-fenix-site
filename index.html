@@ -308,8 +308,7 @@
         <a href="#about">السيرة الذاتية</a>
         <a href="#services">الخدمات</a>
         <a href="#book">الكتاب والاقتباسات</a>
-        <a href="#articles">المقالات</a>
-      <a href="#contact">التواصل</a>
+        <a href="#contact">التواصل</a>
         <button class="admin-trigger" onclick="openPin()">لوحة التحكم</button>
       </div>
     </div>
@@ -517,33 +516,10 @@
 
     <section class="block" id="articles">
       <div class="container" style="max-width:1060px;margin:auto;padding:0 20px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
-          <div>
-            <h2 style="margin:0 0 4px;">المقالات</h2>
-            <p style="margin:0;opacity:0.8;">مقالات وروابط مختارة (يوتيوب، إنستغرام، وروابط متنوعة).</p>
-          </div>
-          <button type="button" class="btn" id="hfOpenAdminBtn">لوحة التحكم — إضافة مقال</button>
+        <div style="margin-bottom:18px;">
+          <h2 style="margin:0 0 4px;">المقالات</h2>
+          <p style="margin:0;opacity:0.8;">مقالات وروابط مختارة (يوتيوب، إنستغرام، وروابط متنوعة).</p>
         </div>
-
-        <div id="hfAdminPanel" style="display:none;border:1px solid rgba(0,0,0,0.15);border-radius:14px;padding:18px;margin-bottom:22px;background:var(--soft,#f7f7f7);">
-          <h3 style="margin-top:0;">إضافة مقال جديد</h3>
-          <form id="hfArticleForm" style="display:grid;gap:10px;">
-            <input type="text" id="hfArtTitle" placeholder="عنوان المقال" required style="padding:10px;border-radius:8px;border:1px solid #ccc;" />
-            <select id="hfArtCat" style="padding:10px;border-radius:8px;border:1px solid #ccc;">
-              <option value="مقال">مقال</option>
-              <option value="يوتيوب">فيديو / يوتيوب</option>
-              <option value="إنستغرام">إنستغرام</option>
-              <option value="رابط">رابط خارجي</option>
-            </select>
-            <textarea id="hfArtBody" rows="4" placeholder="نص المقال..." required style="padding:10px;border-radius:8px;border:1px solid #ccc;"></textarea>
-            <input type="url" id="hfArtUrl" placeholder="رابط يوتيوب، إنستغرام، أو أي رابط آخر (اختياري)" style="padding:10px;border-radius:8px;border:1px solid #ccc;" />
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <button type="submit" class="btn">حفظ ونشر المقال</button>
-              <button type="button" class="btn" id="hfCloseAdminBtn" style="opacity:0.8;">إغلاق</button>
-            </div>
-          </form>
-        </div>
-
         <div id="hfArticlesList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;"></div>
       </div>
     </section>
@@ -1290,5 +1266,125 @@
       })();
     </script>
     
+
+<script>
+(function() {
+  const KEY = "hafida_fenix_articles_v1";
+  const defaults = [
+    {
+      id: "init-1",
+      title: "مرحباً بكم في قسم المقالات",
+      category: "مقال",
+      body: "تُضاف المقالات وروابط يوتيوب وإنستغرام من داخل لوحة تحكم الأدمن بعد تسجيل الدخول.",
+      url: "",
+      date: new Date().toLocaleDateString("ar-EG")
+    }
+  ];
+
+  function loadItems() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) {
+        localStorage.setItem(KEY, JSON.stringify(defaults));
+        return defaults;
+      }
+      return JSON.parse(raw);
+    } catch (_) {
+      return defaults;
+    }
+  }
+
+  function saveItems(items) {
+    localStorage.setItem(KEY, JSON.stringify(items));
+  }
+
+  function ytId(url) {
+    if (!url) return null;
+    const m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+    return m ? m[1] : null;
+  }
+
+  function renderMedia(url) {
+    if (!url) return "";
+    const id = ytId(url);
+    if (id) {
+      return '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;margin-top:8px;"><iframe src="https://www.youtube.com/embed/' + id + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen loading="lazy"></iframe></div>';
+    }
+    const label = url.includes("instagram.com") ? "فتح منشور إنستغرام" : "فتح الرابط";
+    return '<div style="margin-top:8px;padding:10px;border:1px solid rgba(0,0,0,0.12);border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;word-break:break-all;"><span style="font-size:0.85rem;">' + url + '</span><a href="' + url + '" target="_blank" rel="noopener noreferrer" style="font-weight:bold;white-space:nowrap;">' + label + ' ↗</a></div>';
+  }
+
+  function renderArticles() {
+    const box = document.getElementById("hfArticlesList");
+    const adminList = document.getElementById("hfAdminArticlesList");
+    const items = loadItems();
+    const loggedIn = (typeof isAdmin !== "undefined") && Boolean(isAdmin);
+
+    if (box) {
+      box.innerHTML = items.map(it => (
+        '<article style="border:1px solid rgba(0,0,0,0.12);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;background:#fff;">' +
+          '<span style="font-size:0.8rem;font-weight:bold;opacity:0.75;">' + it.category + ' • ' + it.date + '</span>' +
+          '<h3 style="margin:0;">' + it.title + '</h3>' +
+          '<p style="margin:0;line-height:1.7;">' + it.body + '</p>' +
+          renderMedia(it.url) +
+        '</article>'
+      )).join("");
+    }
+
+    if (adminList) {
+      adminList.innerHTML = loggedIn ? items.map(it => (
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;background:#fff;">' +
+          '<span><strong>' + it.title + '</strong> (' + it.category + ')</span>' +
+          '<button type="button" class="btn btn-danger btn-sm" onclick="hfDelArt(\'' + it.id + '\')">حذف</button>' +
+        '</div>'
+      )).join("") : "";
+    }
+  }
+
+  window.hfDelArt = function(id) {
+    if (typeof isAdmin === "undefined" || !isAdmin) return;
+    saveItems(loadItems().filter(x => x.id !== id));
+    renderArticles();
+  };
+
+  const form = document.getElementById("hfArticleForm");
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (typeof isAdmin === "undefined" || !isAdmin) return;
+      const item = {
+        id: String(Date.now()),
+        title: document.getElementById("hfArtTitle").value.trim(),
+        category: document.getElementById("hfArtCat").value,
+        body: document.getElementById("hfArtBody").value.trim(),
+        url: document.getElementById("hfArtUrl").value.trim(),
+        date: new Date().toLocaleDateString("ar-EG")
+      };
+      saveItems([item, ...loadItems()]);
+      renderArticles();
+      form.reset();
+    });
+  }
+
+  // تحديث قائمة الأدمن عند فتح لوحة التحكم
+  const origCheckPin = window.checkPin;
+  if (typeof origCheckPin === "function") {
+    window.checkPin = function() {
+      origCheckPin();
+      renderArticles();
+    };
+  }
+  const origOpenPin = window.openPin;
+  if (typeof origOpenPin === "function") {
+    window.openPin = function() {
+      origOpenPin();
+      renderArticles();
+    };
+  }
+
+  renderArticles();
+})();
+</script>
 </body>
+
 </html>
