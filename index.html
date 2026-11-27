@@ -1479,48 +1479,5 @@ const HF_PERMANENT_ARTICLES = [
 </script>
 <!-- HF_ARTICLES_FULL_END -->
 
-
-
-
-\n</body>");
-      }
-
-      let outBin = "";
-      outBytes.forEach(b => outBin += String.fromCharCode(b));
-
-        method: "PUT",
-        headers: {
-          "Authorization": "Bearer " + token,
-          "Accept": "application/vnd.github+json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          content: btoa(outBin),
-          sha: fileObj.sha,
-          branch: BRANCH
-        })
-      });
-
-      if (!rPut.ok) throw new Error("فشل الرفع (" + rPut.status + ")");
-    } catch (err) {
-    }
-  }
-
-  const form = document.getElementById("hf-art-form");
-  if (form) {
-    form.addEventListener("submit", function() {
-    }, true);
-  }
-
-  if (typeof origDelete === "function") {
-    window.hfDeleteArticle = function(id) {
-      origDelete(id);
-    };
-  }
-
-  syncFromCloudOnLoad();
-})();
-</script>
-
 </body>
 </html>
