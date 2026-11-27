@@ -1470,5 +1470,102 @@ const HF_PERMANENT_ARTICLES = [];
 </script>
 <!-- HF_ARTICLES_FULL_END -->
 
+<!-- HF_CLOUD_SYNC_START -->
+<script>
+(function() {
+  const REPO = "wahidsalh7/hafida-fenix-site";
+  const RAW_URL = "https://raw.githubusercontent.com/" + REPO + "/main/index.html";
+  const LOCAL_KEY = "hf_articles_full_v1";
+
+  function extractArticlesFromHtml(src) {
+    const m = src.match(/const HF_PERMANENT_ARTICLES = (\[.*?\]);/s);
+    if (!m) return null;
+    try {
+      const parsed = JSON.parse(m[1]);
+      return Array.isArray(parsed) ? parsed : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function syncFromCloud() {
+    try {
+      const res = await fetch(RAW_URL + "?t=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) return;
+      const remoteHtml = await res.text();
+      const cloudItems = extractArticlesFromHtml(remoteHtml);
+      if (Array.isArray(cloudItems) && cloudItems.length > 0) {
+        const currentLocal = JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]");
+        if (!Array.isArray(currentLocal) || currentLocal.length === 0) {
+          localStorage.setItem(LOCAL_KEY, JSON.stringify(cloudItems));
+          location.reload();
+        }
+      }
+    } catch (_) {}
+  }
+
+  // أيضاً: إتاحة رفع مقالات الهاتف مباشرة باستخدام المستودع المعروف wahidsalh7/hafida-fenix-site
+  const cloudBtn = document.getElementById("hf-art-cloud-btn");
+  if (cloudBtn) {
+    cloudBtn.addEventListener("click", async function() {
+      const statusEl = document.getElementById("hf-art-status");
+      const setMsg = (t) => { if (statusEl) statusEl.textContent = t; };
+      let token = localStorage.getItem("hf_gh_token") || "";
+      if (!token) {
+        token = (prompt("أدخل GitHub Token (يُحفظ مرة واحدة):") || "").trim();
+        if (!token) return;
+        localStorage.setItem("hf_gh_token", token);
+      }
+      const items = JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]");
+      if (!items.length) {
+        setMsg("لا توجد مقالات لرفعها.");
+        return;
+      }
+      setMsg("جاري النشر إلى " + REPO + " ...");
+      try {
+        const apiUrl = "https://api.github.com/repos/" + REPO + "/contents/index.html";
+        const rGet = await fetch(apiUrl, {
+          headers: { "Authorization": "token " + token, "Accept": "application/vnd.github.v3+json" }
+        });
+        if (!rGet.ok) throw new Error("خطأ جلب الملف (" + rGet.status + ")");
+        const data = await rGet.json();
+
+        const bin = atob(data.content.replace(/\n/g, ""));
+        const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+        let txt = new TextDecoder("utf-8").decode(bytes);
+
+        const replacement = "const HF_PERMANENT_ARTICLES = " + JSON.stringify(items, null, 2) + ";";
+        txt = txt.replace(/const HF_PERMANENT_ARTICLES = \[[\s\S]*?\];/, replacement);
+
+        const outBytes = new TextEncoder().encode(txt);
+        let outBin = "";
+        outBytes.forEach(b => outBin += String.fromCharCode(b));
+
+        const rPut = await fetch(apiUrl, {
+          method: "PUT",
+          headers: {
+            "Authorization": "token " + token,
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: "Sync articles from mobile to cloud",
+            content: btoa(outBin),
+            sha: data.sha,
+            branch: "main"
+          })
+        });
+        if (!rPut.ok) throw new Error("خطأ الرفع (" + rPut.status + ")");
+        setMsg("تم نشر المقالات للسحابة بنجاح!");
+      } catch (e) {
+        setMsg("تعذر النشر: " + e.message);
+      }
+    });
+  }
+
+  syncFromCloud();
+})();
+</script>
+<!-- HF_CLOUD_SYNC_END -->
 </body>
 </html>
