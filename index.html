@@ -1562,7 +1562,7 @@
       setStatus("متصل بالسحابة (" + cfg.url.replace(/^https?:\/\//, "") + ") — عدد المقالات: " + data.length);
       renderAll(data);
     } catch (err) {
-      setStatus("تنبيه السحابة: " + err.message);
+      setStatus("تنبيه السحابة: " + (err && err.message ? err.message : String(err)));
       renderAll(readCache());
     }
   }
@@ -1579,7 +1579,7 @@
       if (!res.ok) throw new Error("HTTP " + res.status);
       await fetchCloudArticles();
     } catch (err) {
-      setStatus("خطأ الحذف: " + err.message);
+      setStatus("خطأ الحذف: " + (err && err.message ? err.message : String(err)));
     }
   };
 
@@ -1621,7 +1621,7 @@
         await fetchCloudArticles();
         setStatus("تم النشر والمزامنة مع السحابة بنجاح.");
       } catch (err) {
-        setStatus("خطأ النشر: " + err.message);
+        setStatus("خطأ النشر: " + (err && err.message ? err.message : String(err))); console.error("HF_ART_ERR:", err);
       }
     });
   }
