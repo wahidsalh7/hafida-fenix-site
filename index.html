@@ -1394,5 +1394,127 @@ const HF_STATIC_ARTICLES = [];
 })();
 </script>
 <!-- HF_ARTICLES_CLEAN_END -->
+<!-- HF_ART_DIRECT_START -->
+<section id="hf-articles-section" style="max-width:1060px;margin:32px auto;padding:0 20px;">
+  <h2 style="margin:0 0 14px;">المقالات</h2>
+  <div id="hf-articles-public" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-bottom:24px;"></div>
+
+  <div id="hf-articles-admin-box" style="border:1px solid rgba(0,0,0,0.15);border-radius:14px;padding:18px;background:#fafafa;">
+    <h3 style="margin:0 0 10px;">إضافة مقال أو رابط (يوتيوب / إنستغرام / رابط)</h3>
+    <div id="hf-art-msg" style="font-size:0.9rem;margin-bottom:10px;font-weight:700;"></div>
+    <form id="hf-art-form" style="display:grid;gap:10px;">
+      <input id="hf-art-title" type="text" placeholder="عنوان المقال" required style="padding:10px;border-radius:8px;border:1px solid #ccc;" />
+      <select id="hf-art-cat" style="padding:10px;border-radius:8px;border:1px solid #ccc;">
+        <option value="مقال">مقال</option>
+        <option value="يوتيوب">فيديو / يوتيوب</option>
+        <option value="إنستغرام">إنستغرام</option>
+        <option value="رابط">رابط خارجي</option>
+      </select>
+      <textarea id="hf-art-body" rows="4" placeholder="نص المقال أو وصف الرابط" required style="padding:10px;border-radius:8px;border:1px solid #ccc;"></textarea>
+      <input id="hf-art-url" type="url" placeholder="رابط يوتيوب أو إنستغرام أو أي رابط (اختياري)" style="padding:10px;border-radius:8px;border:1px solid #ccc;" />
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button type="submit" style="padding:10px 18px;border-radius:8px;border:0;background:#4a148c;color:#fff;font-weight:700;cursor:pointer;">إضافة المقال</button>
+        <button type="button" id="hf-art-copy" style="padding:10px 14px;border-radius:8px;border:1px solid #4a148c;background:#fff;color:#4a148c;font-weight:700;cursor:pointer;">نسخ كود المقالات</button>
+      </div>
+    </form>
+    <div id="hf-articles-manage" style="display:grid;gap:8px;margin-top:16px;"></div>
+  </div>
+</section>
+
+<script>
+const HF_SAVED_ARTICLES = [];
+(function() {
+  const KEY = "hf_direct_articles_v1";
+  const getItems = () => {
+    try {
+      const d = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (Array.isArray(d)) return d;
+    } catch (_) {}
+    return Array.isArray(HF_SAVED_ARTICLES) ? HF_SAVED_ARTICLES.slice() : [];
+  };
+  const setItems = (arr) => {
+    try { localStorage.setItem(KEY, JSON.stringify(arr)); } catch (_) {}
+  };
+  const setMsg = (t) => {
+    const el = document.getElementById("hf-art-msg");
+    if (el) el.textContent = t;
+  };
+  const ytCode = (u) => {
+    if (!u) return "";
+    const m = u.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+    return m ? m[1] : "";
+  };
+  const mediaHtml = (u) => {
+    if (!u) return "";
+    const id = ytCode(u);
+    if (id) {
+      return '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;margin-top:8px;"><iframe src="https://www.youtube.com/embed/' + id + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen loading="lazy"></iframe></div>';
+    }
+    const lbl = u.includes("instagram.com") ? "فتح إنستغرام" : "فتح الرابط";
+    return '<div style="margin-top:8px;"><a href="' + u + '" target="_blank" rel="noopener noreferrer" style="font-weight:700;">' + lbl + ' ↗</a></div>';
+  };
+  const render = () => {
+    const items = getItems();
+    const pub = document.getElementById("hf-articles-public");
+    const mgr = document.getElementById("hf-articles-manage");
+    if (pub) {
+      pub.innerHTML = items.map(x => (
+        '<article style="border:1px solid rgba(0,0,0,0.12);border-radius:12px;padding:16px;background:#fff;">' +
+          '<div style="font-size:0.8rem;opacity:0.75;font-weight:700;">' + (x.cat || "مقال") + ' • ' + (x.date || "") + '</div>' +
+          '<h3 style="margin:6px 0;">' + (x.title || "") + '</h3>' +
+          '<p style="margin:0;line-height:1.7;">' + (x.body || "") + '</p>' +
+          mediaHtml(x.url || "") +
+        '</article>'
+      )).join("");
+    }
+    if (mgr) {
+      mgr.innerHTML = items.map(x => (
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;">' +
+          '<span><strong>' + (x.title || "") + '</strong> (' + (x.cat || "مقال") + ')</span>' +
+          '<button type="button" onclick="hfRemoveArt(\'' + String(x.id).replace(/'/g, "") + '\')" style="padding:4px 10px;border-radius:6px;border:0;background:#b91c1c;color:#fff;cursor:pointer;">حذف</button>' +
+        '</div>'
+      )).join("");
+    }
+  };
+  window.hfRemoveArt = (id) => {
+    const next = getItems().filter(x => String(x.id) !== String(id));
+    setItems(next);
+    render();
+    setMsg("تم الحذف.");
+  };
+  const form = document.getElementById("hf-art-form");
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const next = [{
+        id: "a" + Date.now(),
+        title: document.getElementById("hf-art-title").value.trim(),
+        cat: document.getElementById("hf-art-cat").value,
+        body: document.getElementById("hf-art-body").value.trim(),
+        url: document.getElementById("hf-art-url").value.trim(),
+        date: new Date().toLocaleDateString("ar-EG")
+      }].concat(getItems());
+      setItems(next);
+      form.reset();
+      render();
+      setMsg("تمت إضافة المقال بنجاح.");
+    });
+  }
+  const copyBtn = document.getElementById("hf-art-copy");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", async () => {
+      const txt = "const HF_SAVED_ARTICLES = " + JSON.stringify(getItems(), null, 2) + ";";
+      try {
+        await navigator.clipboard.writeText(txt);
+        setMsg("تم نسخ كود المقالات.");
+      } catch (_) {
+        prompt("انسخ الكود:", txt);
+      }
+    });
+  }
+  render();
+})();
+</script>
+<!-- HF_ART_DIRECT_END -->
 </body>
 </html>
