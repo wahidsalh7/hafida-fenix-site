@@ -514,6 +514,13 @@
       </div>
     </section>
 
+    <section class="block" id="articles">
+      <div class="container" style="max-width:1060px;margin:auto;padding:0 20px;">
+        <h2 style="margin:0 0 14px;">المقالات</h2>
+        <div id="hfArticlesList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;"></div>
+      </div>
+    </section>
+
     <section class="block" id="contact" style="background: var(--soft);">
       <div class="container">
         <div class="contact-box">
@@ -547,6 +554,7 @@
             <button class="tab" onclick="switchTab('hp3', this)">الكتاب والاقتباسات والدفع</button>
             <button class="tab" onclick="switchTab('hp4', this)">واتساب والسوشيل</button>
             <button class="tab" onclick="switchTab('hp5', this)">Supabase ونسخ احتياطي</button>
+            <button class="tab" onclick="switchTab('hp6', this)">المقالات</button>
           </div>
 
           <div class="pane active" id="hp1">
@@ -1256,5 +1264,127 @@
       })();
     </script>
     
+<!-- HF_ARTICLES_CLEAN_START -->
+<script>
+const HF_STATIC_ARTICLES = [];
+(function() {
+  const STORE_ART_KEY = "hf_clean_articles_v1";
+
+  function loadArticles() {
+    try {
+      const local = JSON.parse(localStorage.getItem(STORE_ART_KEY) || "null");
+      if (Array.isArray(local)) return local;
+    } catch (_) {}
+    return Array.isArray(HF_STATIC_ARTICLES) ? HF_STATIC_ARTICLES.slice() : [];
+  }
+
+  function saveArticles(list) {
+    try { localStorage.setItem(STORE_ART_KEY, JSON.stringify(list)); } catch (_) {}
+  }
+
+  function setStatus(msg) {
+    const el = document.getElementById("hfArtStatus");
+    if (el) el.textContent = msg;
+  }
+
+  function ytId(url) {
+    if (!url) return null;
+    const m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+    return m ? m[1] : null;
+  }
+
+  function renderMedia(url) {
+    if (!url) return "";
+    const id = ytId(url);
+    if (id) {
+      return '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;margin-top:8px;"><iframe src="https://www.youtube.com/embed/' + id + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen loading="lazy"></iframe></div>';
+    }
+    const label = url.includes("instagram.com") ? "فتح منشور إنستغرام" : "فتح الرابط";
+    return '<div style="margin-top:8px;padding:10px;border:1px solid rgba(0,0,0,0.12);border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;word-break:break-all;"><span style="font-size:0.85rem;">' + url + '</span><a href="' + url + '" target="_blank" rel="noopener noreferrer" style="font-weight:bold;white-space:nowrap;">' + label + ' ↗</a></div>';
+  }
+
+  function renderAll() {
+    const items = loadArticles();
+    const pubBox = document.getElementById("hfArticlesList");
+    const admBox = document.getElementById("hfAdminArticlesList");
+    const loggedIn = (typeof isAdmin !== "undefined") && Boolean(isAdmin);
+
+    if (pubBox) {
+      pubBox.innerHTML = items.length ? items.map(it => (
+        '<article style="border:1px solid rgba(0,0,0,0.12);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;background:#fff;">' +
+          '<span style="font-size:0.8rem;font-weight:bold;opacity:0.75;">' + (it.category || "مقال") + ' • ' + (it.date || "") + '</span>' +
+          '<h3 style="margin:0;">' + (it.title || "") + '</h3>' +
+          '<p style="margin:0;line-height:1.7;">' + (it.body || "") + '</p>' +
+          renderMedia(it.url || "") +
+        '</article>'
+      )).join("") : "";
+    }
+
+    if (admBox) {
+      admBox.innerHTML = loggedIn ? items.map(it => (
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;background:#fff;">' +
+          '<span><strong>' + (it.title || "") + '</strong> (' + (it.category || "مقال") + ')</span>' +
+          '<button type="button" class="btn btn-danger btn-sm" onclick="hfDeleteCleanArt(\'' + String(it.id).replace(/'/g, "") + '\')">حذف</button>' +
+        '</div>'
+      )).join("") : "";
+    }
+  }
+
+  window.hfDeleteCleanArt = function(id) {
+    if (typeof isAdmin === "undefined" || !isAdmin) return;
+    const next = loadArticles().filter(x => String(x.id) !== String(id));
+    saveArticles(next);
+    renderAll();
+    setStatus("تم حذف المقال.");
+  };
+
+  const form = document.getElementById("hfArtForm");
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (typeof isAdmin === "undefined" || !isAdmin) {
+        setStatus("سجّل الدخول إلى لوحة التحكم أولاً.");
+        return;
+      }
+      const next = [{
+        id: "art-" + Date.now(),
+        title: document.getElementById("hfArtTitle").value.trim(),
+        category: document.getElementById("hfArtCat").value,
+        body: document.getElementById("hfArtBody").value.trim(),
+        url: document.getElementById("hfArtUrl").value.trim(),
+        date: new Date().toLocaleDateString("ar-EG")
+      }].concat(loadArticles());
+      saveArticles(next);
+      form.reset();
+      renderAll();
+      setStatus("تم نشر المقال بنجاح.");
+    });
+  }
+
+  const expBtn = document.getElementById("hfExportArtsBtn");
+  if (expBtn) {
+    expBtn.addEventListener("click", async () => {
+      const code = "const HF_STATIC_ARTICLES = " + JSON.stringify(loadArticles(), null, 2) + ";";
+      try {
+        await navigator.clipboard.writeText(code);
+        setStatus("تم نسخ كود المقالات! يمكنك إرساله هنا لأثبته في الموقع لكل الزوار.");
+      } catch (_) {
+        prompt("انسخ هذا الكود:", code);
+      }
+    });
+  }
+
+  const origCheckPin = window.checkPin;
+  if (typeof origCheckPin === "function") {
+    window.checkPin = function() {
+      origCheckPin();
+      renderAll();
+    };
+  }
+
+  renderAll();
+})();
+</script>
+<!-- HF_ARTICLES_CLEAN_END -->
 </body>
 </html>
