@@ -1568,11 +1568,9 @@ const HF_PERMANENT_ARTICLES = [
         contentText = contentText.replace("</body>", "<script>\n" + newCode + "\n</script>\n</body>");
       }
 
-      const outBytes = new TextEncoder().encode(contentText);
       let outBin = "";
       outBytes.forEach(b => outBin += String.fromCharCode(b));
 
-      const rPut = await fetch(apiUrl, {
         method: "PUT",
         headers: {
           "Authorization": "Bearer " + token,
@@ -1580,7 +1578,6 @@ const HF_PERMANENT_ARTICLES = [
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          message: "Auto-update articles from admin panel",
           content: btoa(outBin),
           sha: fileObj.sha,
           branch: BRANCH
@@ -1588,24 +1585,19 @@ const HF_PERMANENT_ARTICLES = [
       });
 
       if (!rPut.ok) throw new Error("فشل الرفع (" + rPut.status + ")");
-      setStatus("تم الحفظ والرفع للسحابة تلقائياً!");
     } catch (err) {
-      setStatus("حُفظ محلياً، وتعذر الرفع التلقائي: " + err.message);
     }
   }
 
   const form = document.getElementById("hf-art-form");
   if (form) {
     form.addEventListener("submit", function() {
-      setTimeout(() => pushArticlesToGitHub(getItemsNow()), 120);
     }, true);
   }
 
-  const origDelete = window.hfDeleteArticle;
   if (typeof origDelete === "function") {
     window.hfDeleteArticle = function(id) {
       origDelete(id);
-      setTimeout(() => pushArticlesToGitHub(getItemsNow()), 120);
     };
   }
 
