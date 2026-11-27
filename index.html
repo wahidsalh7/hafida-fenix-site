@@ -308,7 +308,8 @@
         <a href="#about">السيرة الذاتية</a>
         <a href="#services">الخدمات</a>
         <a href="#book">الكتاب والاقتباسات</a>
-        <a href="#contact">التواصل</a>
+        <a href="#articles">المقالات</a>
+      <a href="#contact">التواصل</a>
         <button class="admin-trigger" onclick="openPin()">لوحة التحكم</button>
       </div>
     </div>
@@ -511,6 +512,39 @@
   </div>
 </div>
 <!-- GUMROAD_4_BOOKS_END -->
+      </div>
+    </section>
+
+    <section class="block" id="articles">
+      <div class="container" style="max-width:1060px;margin:auto;padding:0 20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
+          <div>
+            <h2 style="margin:0 0 4px;">المقالات</h2>
+            <p style="margin:0;opacity:0.8;">مقالات وروابط مختارة (يوتيوب، إنستغرام، وروابط متنوعة).</p>
+          </div>
+          <button type="button" class="btn" id="hfOpenAdminBtn">لوحة التحكم — إضافة مقال</button>
+        </div>
+
+        <div id="hfAdminPanel" style="display:none;border:1px solid rgba(0,0,0,0.15);border-radius:14px;padding:18px;margin-bottom:22px;background:var(--soft,#f7f7f7);">
+          <h3 style="margin-top:0;">إضافة مقال جديد</h3>
+          <form id="hfArticleForm" style="display:grid;gap:10px;">
+            <input type="text" id="hfArtTitle" placeholder="عنوان المقال" required style="padding:10px;border-radius:8px;border:1px solid #ccc;" />
+            <select id="hfArtCat" style="padding:10px;border-radius:8px;border:1px solid #ccc;">
+              <option value="مقال">مقال</option>
+              <option value="يوتيوب">فيديو / يوتيوب</option>
+              <option value="إنستغرام">إنستغرام</option>
+              <option value="رابط">رابط خارجي</option>
+            </select>
+            <textarea id="hfArtBody" rows="4" placeholder="نص المقال..." required style="padding:10px;border-radius:8px;border:1px solid #ccc;"></textarea>
+            <input type="url" id="hfArtUrl" placeholder="رابط يوتيوب، إنستغرام، أو أي رابط آخر (اختياري)" style="padding:10px;border-radius:8px;border:1px solid #ccc;" />
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button type="submit" class="btn">حفظ ونشر المقال</button>
+              <button type="button" class="btn" id="hfCloseAdminBtn" style="opacity:0.8;">إغلاق</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="hfArticlesList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;"></div>
       </div>
     </section>
 
